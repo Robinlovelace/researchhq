@@ -5,6 +5,7 @@
  * in syncPortfolio and its validation in validateInstance.
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
@@ -30,10 +31,11 @@ import {
 } from '@researchhq/schema';
 
 // ---------------------------------------------------------------------------
-// Test workspace root (disk-backed, not RAM-backed /tmp)
+// Test workspace root: isolated per-process temp dir, portable across local
+// hosts and GitHub Actions CI (never a hardcoded absolute path)
 // ---------------------------------------------------------------------------
 
-const TEST_ROOT = '/mnt/secondary/tmp/researchhq-cli-audit-test';
+const TEST_ROOT = join(tmpdir(), `researchhq-cli-audit-test-${process.pid}`);
 
 function freshDir(name: string): string {
   const dir = join(TEST_ROOT, name);

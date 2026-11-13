@@ -5,6 +5,7 @@
  * matching, journal name merging, and public export sanitization.
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it, beforeEach } from 'vitest';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
@@ -24,10 +25,11 @@ import {
 } from '../src/index.js';
 
 // ---------------------------------------------------------------------------
-// Test workspace root (disk-backed, not RAM-backed /tmp)
+// Test workspace root: isolated per-process temp dir, portable across local
+// hosts and GitHub Actions CI (never a hardcoded absolute path)
 // ---------------------------------------------------------------------------
 
-const TEST_ROOT = '/mnt/secondary/tmp/researchhq-cli-test';
+const TEST_ROOT = join(tmpdir(), `researchhq-cli-test-${process.pid}`);
 
 function freshDir(name: string): string {
   const dir = join(TEST_ROOT, name);

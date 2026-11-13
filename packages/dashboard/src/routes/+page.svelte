@@ -238,7 +238,7 @@
         <div>
           <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-[var(--accent-primary)]">
             <span class="rounded-md bg-[var(--accent-primary)]/12 px-2 py-0.5">ResearchHQ</span>
-            <span>·</span>
+            <span class="hidden sm:inline">·</span>
             <span class="text-[var(--ink-muted)]">{activeSnapshot.author.affiliation}</span>
           </div>
           <h1

@@ -6,12 +6,13 @@
  * calls.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { checkPublicUrls } from '../src/sync.js';
 
-const TEST_ROOT = '/mnt/secondary/tmp/researchhq-cli-check-links-test';
+const TEST_ROOT = join(tmpdir(), `researchhq-cli-check-links-test-${process.pid}`);
 
 const createdDirs: string[] = [];
 

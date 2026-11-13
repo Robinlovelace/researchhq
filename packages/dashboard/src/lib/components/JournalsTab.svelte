@@ -37,12 +37,28 @@
     return { weighted, simple, venueCount: pairs.length, articleCount: weightSum };
   });
 
+  // Highest-output venue: strictly peer-reviewed journal venues (book series
+  // and repositories never qualify); fall back to any published venue only
+  // when no journal venue matches.
   const topJournal = $derived.by(() => {
+    const journalVenues = publishedJournals.filter((j) => j.venueType === 'journal');
+    const pool = journalVenues.length > 0 ? journalVenues : publishedJournals;
     let best: JournalMetric | null = null;
-    for (const j of publishedJournals) {
+    for (const j of pool) {
       if (!best || j.authorPublishedCount > best.authorPublishedCount) best = j;
     }
     return best;
+  });
+
+  // Sub-label under the card title: the publisher when it adds information;
+  // when the publisher duplicates the title or is empty, a role label instead.
+  const topJournalSubLabel = $derived.by(() => {
+    const j = topJournal;
+    if (!j) return 'No published articles indexed yet';
+    if (!j.publisher || j.publisher === j.name || j.publisher === (j.shortName ?? j.name)) {
+      return 'Peer-reviewed journal';
+    }
+    return j.publisher;
   });
 
   // ---------------------------------------------------------------------------
@@ -108,7 +124,9 @@
 
   const chartWidth = 640;
   const chartHeight = 380;
-  const margin = { top: 16, right: 24, bottom: 46, left: 58 };
+  // Top margin gives JIF = 12 markers (zoom cap) and their above-zoom arrows
+  // enough headroom so nothing is clipped at the top edge of the SVG.
+  const margin = { top: 32, right: 24, bottom: 46, left: 58 };
   const innerWidth = chartWidth - margin.left - margin.right;
   const innerHeight = chartHeight - margin.top - margin.bottom;
 
@@ -278,7 +296,7 @@
           {/if}
         </div>
         <p class="mt-1 truncate text-xs text-[var(--ink-muted)]" title={topJournal?.name ?? ''}>
-          {topJournal?.name ?? 'No published articles indexed yet'}
+          {topJournalSubLabel}
         </p>
       </div>
 

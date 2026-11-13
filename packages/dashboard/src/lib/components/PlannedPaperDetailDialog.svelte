@@ -132,22 +132,10 @@
               <span>Percent Complete</span>
               <span class="text-sm font-bold text-[var(--accent-primary)]">{paper.readinessPercent}%</span>
             </div>
-            <div
-              class="mt-2 h-2 w-full overflow-hidden rounded-full bg-[var(--border-subtle)]/50"
-              role="progressbar"
-              aria-valuenow={sliderReadiness ?? paper.readinessPercent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label="Percent complete"
-            >
-              <div
-                class="h-full rounded-full bg-[var(--accent-primary)]"
-                style="width: {sliderReadiness ?? paper.readinessPercent}%"
-              ></div>
-            </div>
-
-            <!-- Quick updater: slider + status select (persisted locally) -->
-            <div class="mt-3">
+            <!-- Quick updater: slider + status select (persisted locally).
+                 The duplicate static progressbar was removed: the range input
+                 is the single full-width percent control under the header. -->
+            <div class="mt-2">
               <label for="detail-progress-range" class="sr-only">
                 Update percent complete for {paper.shortTitle}
               </label>

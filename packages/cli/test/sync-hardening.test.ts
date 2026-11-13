@@ -7,6 +7,7 @@
  * and hardened validateInstance.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
@@ -25,7 +26,7 @@ import {
   type RawOpenAlexWork,
 } from '../src/index.js';
 
-const TEST_ROOT = '/mnt/secondary/tmp/researchhq-cli-test';
+const TEST_ROOT = join(tmpdir(), `researchhq-sync-hardening-test-${process.pid}`);
 
 function sourceFixture(
   overrides: Partial<RawOpenAlexSource> & { id: string; display_name: string },

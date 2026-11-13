@@ -161,6 +161,10 @@
     openScience: allPapers.filter((p) => p.category === 'conceptual-methodology').length,
     literatureGap: allPapers.filter((p) => p.category === 'literature-gap').length
   }));
+
+  function pluralize(count: number, singular: string): string {
+    return `${count} ${singular}${count === 1 ? '' : 's'}`;
+  }
 </script>
 
 <div class="space-y-6">
@@ -183,9 +187,10 @@
           Pipeline: Planned Papers &amp; Target Journals
         </h2>
         <p class="mt-1 max-w-3xl text-sm text-[var(--ink-secondary)]">
-          This live {roadmap.start}-{roadmap.end} roadmap tracks {allPapers.length} planned papers:
-          {categoryCounts.flagship} flagship projects, {categoryCounts.openScience} Open Science
-          frameworks, and {categoryCounts.literatureGap} literature-gap papers. Ideas you add
+          This live {roadmap.start}-{roadmap.end} roadmap tracks
+          {pluralize(allPapers.length, 'planned paper')}: {pluralize(categoryCounts.flagship, 'flagship project')},
+          {pluralize(categoryCounts.openScience, 'Open Science framework')}, and
+          {pluralize(categoryCounts.literatureGap, 'literature-gap paper')}. Ideas you add
           locally with the New Paper Idea button appear here instantly, next to the
           repository-sourced pipeline.
         </p>
@@ -299,10 +304,11 @@
                   </span>
                 </div>
 
-                <!-- Percent complete bar + single-click quick-step buttons -->
-                <div class="flex items-center gap-2">
+                <!-- Percent complete bar (full width, own line so narrow lanes
+                     never crush it) + single-click quick-step buttons -->
+                <div class="flex flex-col gap-1">
                   <div
-                    class="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--surface-subtle)]"
+                    class="h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface-subtle)]"
                     role="progressbar"
                     aria-valuenow={paper.readinessPercent}
                     aria-valuemin={0}
@@ -315,31 +321,33 @@
                       data-progress-fill
                     ></div>
                   </div>
-                  <button
-                    type="button"
-                    aria-label="Decrease percent complete for {paper.shortTitle}: -10%"
-                    onclick={() =>
-                      store.setPaperProgress(paper.slug, {
-                        readinessPercent: paper.readinessPercent - 10
-                      })}
-                    class="inline-flex min-h-6 items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--surface-subtle)] px-1.5 py-0.5 text-[0.6rem] font-bold text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
-                  >
-                    -10%
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Increase percent complete for {paper.shortTitle}: +10%"
-                    onclick={() =>
-                      store.setPaperProgress(paper.slug, {
-                        readinessPercent: paper.readinessPercent + 10
-                      })}
-                    class="inline-flex min-h-6 items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--surface-subtle)] px-1.5 py-0.5 text-[0.6rem] font-bold text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
-                  >
-                    +10%
-                  </button>
-                  <span class="text-[0.65rem] font-semibold text-[var(--ink-muted)]">
-                    Percent complete: {paper.readinessPercent}%
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label="Decrease percent complete for {paper.shortTitle}: -10%"
+                      onclick={() =>
+                        store.setPaperProgress(paper.slug, {
+                          readinessPercent: paper.readinessPercent - 10
+                        })}
+                      class="inline-flex min-h-6 items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--surface-subtle)] px-1.5 py-0.5 text-[0.6rem] font-bold text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
+                    >
+                      -10%
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Increase percent complete for {paper.shortTitle}: +10%"
+                      onclick={() =>
+                        store.setPaperProgress(paper.slug, {
+                          readinessPercent: paper.readinessPercent + 10
+                        })}
+                      class="inline-flex min-h-6 items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--surface-subtle)] px-1.5 py-0.5 text-[0.6rem] font-bold text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
+                    >
+                      +10%
+                    </button>
+                    <span class="text-[0.65rem] font-semibold text-[var(--ink-muted)]">
+                      Percent complete: {paper.readinessPercent}%
+                    </span>
+                  </div>
                 </div>
                 {#if store.hasProgressOverride(paper.slug)}
                   <span
@@ -365,7 +373,8 @@
                   <p
                     class="rounded-lg border-l-2 border-[var(--accent-amber)] bg-[var(--surface-subtle)] p-2 text-xs text-[var(--ink-secondary)]"
                   >
-                    <span class="font-semibold text-[var(--accent-amber)]">Gap filled: </span>{paper.scientificGapFilled}
+                    <span class="font-semibold text-[var(--accent-amber)]">Gap filled:</span>
+                    {paper.scientificGapFilled}
                   </p>
                 {/if}
 

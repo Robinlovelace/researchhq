@@ -5,6 +5,7 @@
  * the init --force error text plus comment-preserving planned paper edits.
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -28,10 +29,11 @@ import {
 } from '../src/index.js';
 
 // ---------------------------------------------------------------------------
-// Test workspace root (disk-backed, not RAM-backed /tmp)
+// Test workspace root: isolated per-process temp dir, portable across local
+// hosts and GitHub Actions CI (never a hardcoded absolute path)
 // ---------------------------------------------------------------------------
 
-const TEST_ROOT = '/mnt/secondary/tmp/researchhq-suggest-test';
+const TEST_ROOT = join(tmpdir(), `researchhq-suggest-test-${process.pid}`);
 
 function freshDir(name: string): string {
   const dir = join(TEST_ROOT, name);

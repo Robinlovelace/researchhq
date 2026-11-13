@@ -7,6 +7,7 @@
  */
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -14,7 +15,7 @@ import { describe, expect, it } from 'vitest';
 const PKG_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
 const MONOREPO_ROOT = join(PKG_DIR, '..', '..');
 const BIN_JS = join(PKG_DIR, 'dist', 'bin.js');
-const TEST_ROOT = '/mnt/secondary/tmp/researchhq-cli-test';
+const TEST_ROOT = join(tmpdir(), `researchhq-bin-symlink-test-${process.pid}`);
 
 if (!existsSync(BIN_JS)) {
   // Tests normally run after a build; recover for bare `vitest` invocations.
