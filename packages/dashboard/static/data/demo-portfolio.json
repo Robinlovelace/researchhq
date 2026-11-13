@@ -32,7 +32,7 @@
   },
   "publications": [
     {
-      "id": "demo-2021-transit",
+      "id": "demo-2021-transit-w1001",
       "doi": "10.1016/j.jtrangeo.2021.100001",
       "title": "OpenTransitMap: National GTFS accessibility surfaces for regional equity planning",
       "year": 2021,
@@ -66,7 +66,7 @@
       "featured": true
     },
     {
-      "id": "demo-2023-heat",
+      "id": "demo-2023-heat-w1002",
       "doi": "10.1016/j.compenvurbsys.2023.100002",
       "title": "Street-canyon shade routing for pedestrian heat-stress adaptation",
       "year": 2023,
@@ -98,7 +98,7 @@
       "url": "https://doi.org/10.1016/j.compenvurbsys.2023.100002"
     },
     {
-      "id": "demo-2024-diamond",
+      "id": "demo-2024-diamond-w1003",
       "doi": "10.16997/ats.1500",
       "title": "Participatory school-street audits with open smartphone telemetry",
       "year": 2024,
@@ -128,7 +128,7 @@
       "url": "https://doi.org/10.16997/ats.1500"
     },
     {
-      "id": "demo-2025-book",
+      "id": "demo-2025-book-w1004",
       "doi": "10.1201/9781003000001",
       "title": "Reproducible Urban Mobility Analytics in R and Python",
       "year": 2025,
@@ -258,7 +258,7 @@
       "id": "crc-press",
       "name": "CRC Press",
       "shortName": null,
-      "venueType": "journal",
+      "venueType": "other",
       "issn": [],
       "publisher": null,
       "openalexSourceId": null,
@@ -272,7 +272,7 @@
       "sjrQuartile": null,
       "isOa": false,
       "isInDoaj": false,
-      "oaModel": "unknown",
+      "oaModel": "book",
       "apcUsd": null,
       "reviewSpeedWeeks": null,
       "scopeTags": [],
@@ -370,7 +370,7 @@
           "journalName": "Active Travel Studies",
           "rank": 1,
           "fitScore": 87,
-          "fitRationale": "Diamond OA (bash APC) with strong municipal policy readership."
+          "fitRationale": "Diamond OA ($0 APC) with strong municipal policy readership."
         }
       ]
     }

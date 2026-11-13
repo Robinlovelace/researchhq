@@ -4,12 +4,15 @@ import { expect, test, type Page } from '@playwright/test';
 /**
  * End-to-end coverage for the ResearchHQ dashboard static production build.
  *
- * Every assertion is grounded in the app's actual markup and in the seeded
- * snapshot data (packages/dashboard/static/data/portfolio.json):
- *   - OpenAlex citations 2,531 vs Google Scholar 4,200
+ * Every assertion is grounded in the app's actual markup and in the default
+ * synthetic example dataset (packages/dashboard/static/data/portfolio.json,
+ * identical to demo-portfolio.json):
+ *   - Dr Alex Rivera (Demo Persona), OpenAlex citations 176 vs Google Scholar 218
+ *   - OpenTransitMap: 84 OpenAlex vs 98 Scholar; book: 31 vs 45
  *   - Journal of Transport Geography: JIF 6.80 (2025 JCR), Q1, hybrid provenance
- *   - 2027 planned: 6 submissions / 5 target publications
- *   - 8 seeded planned papers, csis private repos exported redacted
+ *   - 2021..2028 time series (8 bars), 2 planned papers (75% / 45%)
+ *   - /researchhq/ renders the OSS software-project banner for the example
+ *     persona; real deployments (e.g. /research/) stay portfolio-only.
  */
 
 const TAB_LABELS = [
@@ -20,15 +23,12 @@ const TAB_LABELS = [
   'Future Papers Pipeline'
 ];
 
+const DEMO_ORCID = '0000-0002-1825-0097';
+const ROBIN_ORCID = '0000-0001-5679-6536';
+
 const PLANNED_PAPER_TITLES = [
-  "Methods for prioritising 'bike buses' for safe and sociable cycling to school",
-  'Critical Safety Issues v2: national exposure-calibrated cycling level of service and safety appraisal for England',
-  'Benchmarking street-level cycle network quality metrics against observed cycling flows',
-  'RailActive: strategic appraisal of national rail-to-active-travel corridors along the HS2 legacy route',
-  'The five stages of open and reproducible science for policy-relevant research',
-  'Iterative induced-demand and streetspace-feasible cycle network growth',
-  'Volume-calibrated rat-run and LTN spillover screening with compressed traffic assignment',
-  'Exposure-calibrated multi-modal junction and link crash risk modelling'
+  'Dynamic multimodal accessibility budgets under climate disruption scenarios',
+  'Open benchmark datasets for municipal kerbside and micromobility allocation'
 ];
 
 const THEME_STORAGE_KEY = 'researchhq-color-scheme';
@@ -45,7 +45,12 @@ function politeAnnouncer(page: Page) {
   return page.locator('div[role="status"]');
 }
 
-test('loads with zero console errors, a skip link, the author h1 and all five tab buttons', async ({
+/** The OSS software-project banner (only rendered for the example persona). */
+function ossBanner(page: Page) {
+  return page.locator('section[aria-label="ResearchHQ open-source software overview"]');
+}
+
+test('loads with zero console errors, a skip link, the demo persona h1 and all five tab buttons', async ({
   page
 }) => {
   const consoleErrors: string[] = [];
@@ -65,7 +70,7 @@ test('loads with zero console errors, a skip link, the author h1 and all five ta
   await expect(page.locator('a.skip-link')).toHaveText('Skip to main content');
 
   const h1 = page.locator('h1#dashboard-title');
-  await expect(h1).toContainText('Robin Lovelace');
+  await expect(h1).toContainText('Dr Alex Rivera (Demo Persona)');
 
   const tabs = page.getByRole('tab');
   await expect(tabs).toHaveCount(5);
@@ -77,6 +82,38 @@ test('loads with zero console errors, a skip link, the author h1 and all five ta
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
+});
+
+test('default deployment is the ResearchHQ OSS project site: banner, page title, and no no-op demo toggle', async ({
+  page
+}) => {
+  await page.goto('/');
+
+  const banner = ossBanner(page);
+  await expect(banner).toBeVisible();
+  await expect(banner).toContainText('ResearchHQ: Open-Source Academic Portfolio Toolkit');
+  await expect(banner).toContainText('@researchhq/cli');
+  await expect(banner).toContainText('@researchhq/schema');
+  await expect(banner).toContainText('@researchhq/dashboard');
+  await expect(banner).toContainText('npx @researchhq/cli init && npx @researchhq/cli sync');
+  await expect(banner).toContainText('Exploring synthetic example dataset: Dr Alex Rivera (Demo Persona)');
+
+  await expect(
+    banner.getByRole('link', { name: 'GitHub Repository' })
+  ).toHaveAttribute('href', 'https://github.com/Robinlovelace/researchhq');
+  await expect(
+    banner.getByRole('link', { name: /Live real-world example \(Prof\. Robin Lovelace\)/ })
+  ).toHaveAttribute('href', 'https://robinlovelace.net/research/');
+
+  // The default snapshot IS the demo persona: a "Switch to synthetic OSS demo"
+  // footer button would be a no-op toggle, so it must not render.
+  await expect(page.locator('footer').getByRole('button', { name: /synthetic demo/ })).toHaveCount(
+    0
+  );
+
+  await expect(page).toHaveTitle(
+    'ResearchHQ - Open-Source Academic Portfolio & Planned Papers Dashboard (Example Demo)'
+  );
 });
 
 test('citation source switcher reactively updates KPI and per-publication citation numbers', async ({
@@ -98,37 +135,38 @@ test('citation source switcher reactively updates KPI and per-publication citati
 
   // Defaults to pure OpenAlex
   await expect(selector).toHaveValue('openalex');
-  await expect(citationsKpi(page)).toHaveText('2,531');
+  await expect(citationsKpi(page)).toHaveText('176');
   await expect(
-    page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
-  ).toHaveText('155');
-  const geocomprItem = page.locator('li').filter({ hasText: 'Geocomputation with R' });
-  await expect(geocomprItem).toHaveCount(1);
-  await expect(geocomprItem).toContainText('2025');
-  await expect(geocomprItem).toContainText('Stage 4');
-  await expect(geocomprItem.locator('span.tabular-nums')).toHaveText('144');
+    page.locator('li').filter({ hasText: 'OpenTransitMap' }).locator('span.tabular-nums')
+  ).toHaveText('84');
+  const demoBookItems = page
+    .locator('li:visible')
+    .filter({ hasText: 'Reproducible Urban Mobility Analytics' });
+  await expect(demoBookItems.first()).toContainText('2025');
+  await expect(demoBookItems.filter({ hasText: '31 citations' }).first()).toBeVisible();
 
-  // Switch to Google Scholar: author-level total and per-work citations (never double-counted across editions)
+  // Switch to Google Scholar: author-level total and per-work citations
   await selector.selectOption('scholar');
   await expect(selector).toHaveValue('scholar');
-  await expect(citationsKpi(page)).toHaveText('4,200');
+  await expect(citationsKpi(page)).toHaveText('218');
   await expect(
-    page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
-  ).toHaveText('167');
-  await expect(geocomprItem).toHaveCount(1);
-  await expect(geocomprItem.locator('span.tabular-nums')).toHaveText('204');
+    page.locator('li').filter({ hasText: 'OpenTransitMap' }).locator('span.tabular-nums')
+  ).toHaveText('98');
+  await expect(demoBookItems.filter({ hasText: '45 citations' }).first()).toBeVisible();
+  await expect(demoBookItems.filter({ hasText: '31 citations' })).toHaveCount(0);
 
   // Switch back to OpenAlex
   await selector.selectOption('openalex');
   await expect(selector).toHaveValue('openalex');
-  await expect(citationsKpi(page)).toHaveText('2,531');
+  await expect(citationsKpi(page)).toHaveText('176');
   await expect(
-    page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
-  ).toHaveText('155');
-  await expect(geocomprItem.locator('span.tabular-nums')).toHaveText('144');
+    page.locator('li').filter({ hasText: 'OpenTransitMap' }).locator('span.tabular-nums')
+  ).toHaveText('84');
+  await expect(demoBookItems.filter({ hasText: '31 citations' }).first()).toBeVisible();
+  await expect(demoBookItems.filter({ hasText: '45 citations' })).toHaveCount(0);
 
   // The KPI helper text always names both sources
-  await expect(page.getByText(/OpenAlex: 2,531 · Scholar: 4,200\+/)).toBeVisible();
+  await expect(page.getByText(/OpenAlex: 176 · Scholar: 218\+/)).toBeVisible();
 });
 
 test('Stage 5 scorecard card switches to the Publications tab filtered to Stage 5 outputs', async ({
@@ -145,11 +183,8 @@ test('Stage 5 scorecard card switches to the Publications tab filtered to Stage 
   await expect(page.getByText('Stage: 5', { exact: true })).toBeVisible();
 
   const tbody = page.locator('table tbody');
-  await expect(tbody.locator('tr')).toHaveCount(4);
-  await expect(tbody).toContainText('The Propensity to Cycle Tool');
-  await expect(tbody).toContainText('CRUSE');
-  await expect(tbody).toContainText('Corenet');
-  await expect(tbody).toContainText('spanishoddata');
+  await expect(tbody.locator('tr')).toHaveCount(1);
+  await expect(tbody).toContainText('OpenTransitMap');
 });
 
 test('theme toggle updates meta color-scheme and persists the choice across reloads', async ({
@@ -210,10 +245,10 @@ test('journals table shows JTG provenance metrics, sortable headers, announcemen
   await jtgRow.getByRole('button', { name: 'Filter papers' }).click();
   await expect(page.locator('#panel-publications')).toBeVisible();
   await expect(page.getByText('Journal: Journal of Transport Geography', { exact: true })).toBeVisible();
-  await expect(page.locator('p').filter({ hasText: /Showing/ })).toContainText('8 of 8 publications');
+  await expect(page.locator('p').filter({ hasText: /Showing/ })).toContainText('1 of 1 publications');
 });
 
-test('time series renders historical bars plus 2026-2028 planned markers and an accessible table', async ({
+test('time series renders 8 yearly bars for 2021-2028, planned markers and an accessible table', async ({
   page
 }) => {
   await page.goto('/');
@@ -221,14 +256,17 @@ test('time series renders historical bars plus 2026-2028 planned markers and an 
 
   const chart = page.locator('svg[aria-labelledby="ts-svg-title ts-svg-desc"]');
   const bars = chart.locator('g[role="button"]');
-  await expect(bars).toHaveCount(18);
+  await expect(bars).toHaveCount(8);
 
   // Historical bars carry aria labels with published counts
-  await expect(bars.first()).toHaveAttribute('aria-label', /2011: \d+ published/);
+  await expect(bars.first()).toHaveAttribute(
+    'aria-label',
+    '2021: 1 published (1 articles), 0 planned submissions, 0 planned publications'
+  );
 
-  // Future planned markers for 2026, 2027 and 2028. The 'plan' tag renders
-  // only for years flagged isFuture in the snapshot (2027, 2028); 2026 is the
-  // current year and shows its in-flight planned submissions bar instead.
+  // Future planned markers for 2027 and 2028 (the only isFuture years in the
+  // example snapshot); 2026 is the current year and shows its in-flight
+  // planned submissions bar instead.
   for (const year of ['2026', '2027', '2028']) {
     await expect(chart.getByText(year, { exact: true })).toBeVisible();
   }
@@ -241,13 +279,13 @@ test('time series renders historical bars plus 2026-2028 planned markers and an 
     .filter({ has: page.locator('td').filter({ hasText: /(^|\s)2027/ }).first() });
   await expect(row2027).toBeVisible();
   await expect(row2027).toContainText('(Planned)');
-  // Seeded 2027 plan: 6 submissions and 5 target publications, each in its own
+  // Seeded 2027 plan: 1 submission and 2 target publications, each in its own
   // column so submissions are never hidden behind target publications
-  await expect(row2027.locator('td').nth(8)).toHaveText('6');
-  await expect(row2027.locator('td').nth(9)).toHaveText('5');
+  await expect(row2027.locator('td').nth(8)).toHaveText('1');
+  await expect(row2027.locator('td').nth(9)).toHaveText('2');
 });
 
-test('pipeline kanban shows all 8 seeded papers, redacted private repos, and the target journal matrix', async ({
+test('pipeline kanban shows both example papers, the redacted private repo chip, and the target journal matrix', async ({
   page
 }) => {
   await page.goto('/');
@@ -257,23 +295,21 @@ test('pipeline kanban shows all 8 seeded papers, redacted private repos, and the
     await expect(page.locator('article').filter({ hasText: title })).toBeVisible();
   }
 
-  // csis private repositories were redacted to empty URLs at export time and
-  // must render as non-interactive "(Private)" chips, never as broken links.
-  const csisCard = page
+  // The example private repository has an empty URL at export time and must
+  // render as a non-interactive "(Private)" chip, never as a broken link.
+  const diamondCard = page
     .locator('article')
-    .filter({ hasText: 'Critical Safety Issues v2' });
-  await expect(csisCard.locator('span').filter({ hasText: '(Private)' })).toHaveCount(2);
-  await expect(csisCard.locator('a[href=""]')).toHaveCount(0);
-  await expect(
-    csisCard.getByText('CSIS v2 national modelling pipeline (private) (Private)')
-  ).toBeVisible();
+    .filter({ hasText: 'Open benchmark datasets' });
+  await expect(diamondCard.locator('span').filter({ hasText: '(Private)' })).toHaveCount(1);
+  await expect(diamondCard.locator('a[href=""]')).toHaveCount(0);
+  await expect(diamondCard.getByText('Partner data embargoed (Private)')).toBeVisible();
 
-  // Switch to the Target Journal Matrix view: one row per seeded paper
+  // Switch to the Target Journal Matrix view: one row per example paper
   await page.getByRole('button', { name: 'Target Journal Matrix' }).click();
   const matrixRows = page.locator('table tbody tr');
-  await expect(matrixRows).toHaveCount(8);
-  await expect(matrixRows.first()).toContainText("Methods for prioritising 'bike buses'");
-  await expect(page.locator('p[role="status"]')).toContainText('8 planned papers shown');
+  await expect(matrixRows).toHaveCount(2);
+  await expect(matrixRows.first()).toContainText('Dynamic multimodal accessibility budgets');
+  await expect(page.locator('p[role="status"]')).toContainText('2 planned papers shown');
 });
 
 test('native dialogs: planned paper detail closes on Escape, publication detail light-dismisses on backdrop click', async ({
@@ -283,11 +319,11 @@ test('native dialogs: planned paper detail closes on Escape, publication detail 
   await page.getByRole('tab', { name: /Future Papers Pipeline/ }).click();
 
   // PlannedPaperDetailDialog opened from a kanban card
-  await page.getByRole('button', { name: /bike buses/ }).click();
+  await page.getByRole('button', { name: /multimodal accessibility budgets/ }).click();
   const plannedDialog = page.locator('dialog[open]');
   await expect(plannedDialog).toHaveCount(1);
   await expect(plannedDialog).toHaveAttribute('aria-labelledby', 'planned-detail-title');
-  await expect(page.locator('#planned-detail-title')).toContainText('bike buses');
+  await expect(page.locator('#planned-detail-title')).toContainText('multimodal accessibility budgets');
 
   await page.keyboard.press('Escape');
   await expect(page.locator('dialog[open]')).toHaveCount(0);
@@ -356,7 +392,7 @@ test('idea composer saves a local draft that persists across reloads and emits Y
     .poll(async () =>
       page.evaluate(() =>
         JSON.parse(
-          window.localStorage.getItem('researchhq-local-ideas-v2:0000-0001-5679-6536') ?? '[]'
+          window.localStorage.getItem('researchhq-local-ideas-v2:0000-0002-1825-0097') ?? '[]'
         )
       )
     )
@@ -433,10 +469,10 @@ test('passes axe-core WCAG 2.1 AA accessibility checks across all five tabs in l
   }
 });
 
-test('hydrates deep-linked URL query parameters (?tab=pipeline&paper=bicischools) and syncs URL on navigation', async ({
+test('hydrates deep-linked URL query parameters (?tab=pipeline&paper=demo-multimodal-equity) and syncs URL on navigation', async ({
   page
 }) => {
-  await page.goto('/?tab=pipeline&paper=bicischools');
+  await page.goto('/?tab=pipeline&paper=demo-multimodal-equity');
 
   await expect(page.getByRole('tab', { name: /Future Papers Pipeline/ })).toHaveAttribute(
     'aria-selected',
@@ -445,7 +481,7 @@ test('hydrates deep-linked URL query parameters (?tab=pipeline&paper=bicischools
 
   const dialog = page.locator('dialog[open]');
   await expect(dialog).toBeVisible();
-  await expect(dialog).toContainText(/bicischools/i);
+  await expect(dialog).toContainText(/multimodal accessibility budgets/i);
 
   // Closing the modal strips ?paper= while preserving ?tab=pipeline
   await page.keyboard.press('Escape');
@@ -463,39 +499,39 @@ test('quick percent-complete updater (+10% card button, modal range/CLI snippet,
 }) => {
   await page.goto('/?tab=pipeline');
 
-  const openScienceCard = page
+  const equityCard = page
     .locator('article')
-    .filter({ hasText: 'The five stages of open and reproducible science' });
-  await expect(openScienceCard).toContainText('Percent complete: 40%');
+    .filter({ hasText: 'Dynamic multimodal accessibility budgets' });
+  await expect(equityCard).toContainText('Percent complete: 75%');
 
-  await openScienceCard
+  await equityCard
     .getByRole('button', { name: /Increase percent complete.*: \+10%/ })
     .click();
-  await expect(openScienceCard).toContainText('Percent complete: 50%');
-  await expect(openScienceCard.getByText('Modified locally')).toBeVisible();
+  await expect(equityCard).toContainText('Percent complete: 85%');
+  await expect(equityCard.getByText('Modified locally')).toBeVisible();
 
   // Survives full page reload via localStorage
   await page.reload();
   const reloadedCard = page
     .locator('article')
-    .filter({ hasText: 'The five stages of open and reproducible science' });
-  await expect(reloadedCard).toContainText('Percent complete: 50%');
+    .filter({ hasText: 'Dynamic multimodal accessibility budgets' });
+  await expect(reloadedCard).toContainText('Percent complete: 85%');
 
   // Open detail dialog, inspect live CLI update-idea snippet, and reset to baseline
   await reloadedCard
-    .getByRole('button', { name: /The five stages of open and reproducible science/ })
+    .getByRole('button', { name: /Dynamic multimodal accessibility budgets/ })
     .click();
   const dialog = page.locator('dialog[open]');
   await expect(dialog).toBeVisible();
   const cliPre = dialog.locator('pre[aria-label="Ready to run update-idea CLI command"]');
   await expect(cliPre).toContainText(
-    "npx @researchhq/cli update-idea --slug 'five-stages-open-science' --readiness 50"
+    "npx @researchhq/cli update-idea --slug 'demo-multimodal-equity' --readiness 85"
   );
 
   await dialog.getByRole('button', { name: 'Reset' }).click();
-  await expect(cliPre).toContainText('--readiness 40');
+  await expect(cliPre).toContainText('--readiness 75');
   await page.keyboard.press('Escape');
-  await expect(reloadedCard).toContainText('Percent complete: 40%');
+  await expect(reloadedCard).toContainText('Percent complete: 75%');
 });
 
 test('renders Schema.org JSON-LD, FWCI + Open Science upgrade opportunities, and ?embed=1 compact mode', async ({
@@ -523,47 +559,61 @@ test('renders Schema.org JSON-LD, FWCI + Open Science upgrade opportunities, and
   await upgradesSummary.click();
   await expect(page.getByRole('button', { name: /Copy YAML override/ }).first()).toBeVisible();
 
-  // ?embed=1 compact mode hides footer and header New Paper Idea CTA
+  // ?embed=1 compact mode hides the OSS banner, footer, and header CTA
   await page.goto('/?embed=1');
   await expect(page.locator('[data-embed-mode="true"]')).toBeVisible();
+  await expect(ossBanner(page)).toHaveCount(0);
   await expect(page.locator('footer')).toHaveCount(0);
   await expect(page.locator('header').getByRole('button', { name: 'New Paper Idea' })).toHaveCount(
     0
   );
 });
 
-test('supports ?demo=1 synthetic multi-researcher persona fixture cleanly', async ({ page }) => {
-  await page.goto('/?demo=1');
-  await expect(page.locator('h1#dashboard-title')).toContainText('Dr Alex Rivera (Demo Persona)');
-  await expect(page.getByRole('button', { name: 'Exit synthetic demo' })).toBeVisible();
-});
-
-test('D2: ?demo=1 uses its own storage namespace and never inherits local % complete overrides', async ({
+test('?demo=1 resolves to the same synthetic fixture with the OSS banner and no no-op toggle', async ({
   page
 }) => {
-  // Seed a Robin-namespace progress override (as if saved earlier this session)
+  await page.goto('/?demo=1');
+  await expect(page.locator('h1#dashboard-title')).toContainText('Dr Alex Rivera (Demo Persona)');
+  await expect(ossBanner(page)).toBeVisible();
+  await expect(page.getByRole('button', { name: /synthetic demo/ })).toHaveCount(0);
+});
+
+test('D2: local progress overrides namespace under the active persona ORCID and never leak across personas', async ({
+  page
+}) => {
   await page.goto('/');
   await page.locator('[data-hydrated="true"]').waitFor();
-  await page.evaluate(() => {
+
+  // Seed a Robin-namespace override (as if saved earlier in a real-persona
+  // session on the same origin): it must have zero effect on the demo view.
+  await page.evaluate((orcid) => {
     window.localStorage.setItem(
-      'researchhq-paper-progress-v2:0000-0001-5679-6536',
+      `researchhq-paper-progress-v2:${orcid}`,
       JSON.stringify({
         'demo-multimodal-equity': { readinessPercent: 99, baseReadinessPercent: 75 }
       })
     );
-    window.localStorage.setItem('researchhq-local-ideas-v2:0000-0001-5679-6536', '[]');
-  });
+  }, ROBIN_ORCID);
 
-  await page.goto('/?demo=1');
-  await expect(page.locator('h1#dashboard-title')).toContainText('Dr Alex Rivera (Demo Persona)');
-  await page.getByRole('tab', { name: /Future Papers Pipeline/ }).click();
-
-  // The demo persona's paper keeps its repository readiness (75%); Robin's
-  // namespaced 99% override must not leak into the demo namespace
+  await page.goto('/?tab=pipeline');
   await expect(page.locator('article').filter({ hasText: 'Percent complete: 99%' })).toHaveCount(
     0
   );
   await expect(page.locator('article').filter({ hasText: 'Percent complete: 75%' })).toBeVisible();
+
+  // The demo persona's own namespace does accept and apply the same override,
+  // proving the read path is namespaced by the active snapshot's ORCID.
+  await page.evaluate((orcid) => {
+    window.localStorage.setItem(
+      `researchhq-paper-progress-v2:${orcid}`,
+      JSON.stringify({
+        'demo-multimodal-equity': { readinessPercent: 99, baseReadinessPercent: 75 }
+      })
+    );
+  }, DEMO_ORCID);
+
+  await page.goto('/?tab=pipeline');
+  await expect(page.locator('article').filter({ hasText: 'Percent complete: 99%' })).toBeVisible();
 });
 
 test('D4: copied YAML override snippet is paste-safe with no top-level overrides wrapper', async ({
@@ -583,6 +633,7 @@ test('D4: copied YAML override snippet is paste-safe with no top-level overrides
   // No top-level `overrides:` wrapper: pasting into an existing overrides.yaml stays valid YAML
   expect(snippet).not.toMatch(/^overrides:/m);
   // Entry key is 2-space indented and suffixed with the publication id
+  // (the example ids demo-*-w1001..w1004 keep override keys machine-matchable)
   expect(snippet).toMatch(/^ {2}[a-z0-9-]+-w\d+:$/m);
   // Stage assertion is a comment so pasting unedited cannot claim an unearned stage
   expect(snippet).toContain('# openScienceStage:');

@@ -57,6 +57,12 @@
   // must never leave the demo persona displayed when demoMode === false.
   let demoReqId = 0;
   const activeSnapshot = $derived(store.snapshot ?? data.snapshot);
+  // True when the active snapshot is the synthetic open-source example persona
+  // that ships as the default portfolio.json / demo-portfolio.json fixture.
+  const isExamplePersona = $derived(
+    activeSnapshot.author.orcid === '0000-0002-1825-0097' ||
+      activeSnapshot.author.name.includes('(Demo Persona)')
+  );
 
   async function loadDemoSnapshotIfNeeded(enableDemo: boolean): Promise<void> {
     const req = ++demoReqId;
@@ -212,7 +218,9 @@
 </script>
 
 <svelte:head>
-  <title>{activeSnapshot.author.name} - ResearchHQ Portfolio & Planned Papers</title>
+  <title>{isExamplePersona
+    ? 'ResearchHQ - Open-Source Academic Portfolio & Planned Papers Dashboard (Example Demo)'
+    : `${activeSnapshot.author.name} - ResearchHQ Portfolio & Planned Papers`}</title>
   <meta
     name="description"
     content="Interactive academic research outputs, journal impact metrics, Open Science maturity scorecard, and {store.roadmapYearRange.start}-{store.roadmapYearRange.end} future publications roadmap for {activeSnapshot.author.name}."
@@ -244,6 +252,59 @@
 >
   <!-- Semantic Banner Landmark -->
   <header class="border-b border-[var(--border-subtle)] bg-[var(--surface-card)]">
+    {#if isExamplePersona && !embedMode}
+      <!-- Software-project banner: shown only for the synthetic example persona
+           so real researcher deployments (e.g. /research/) stay portfolio-only. -->
+      <section
+        aria-label="ResearchHQ open-source software overview"
+        class="border-b border-[var(--border-subtle)] bg-[var(--surface-subtle)]"
+      >
+        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+          <p class="text-sm font-bold text-[var(--ink-primary)]">
+            ResearchHQ: Open-Source Academic Portfolio Toolkit
+          </p>
+          <p class="mt-1 max-w-3xl text-sm text-[var(--ink-secondary)]">
+            Open-source CLI (<code>@researchhq/cli</code>), Zod schema (<code
+              >@researchhq/schema</code
+            >), and Svelte 5 static dashboard (<code>@researchhq/dashboard</code>) for academic
+            publication portfolios, 5-stage Open Science scorecards, hybrid journal metrics, and
+            planned-paper roadmaps.
+          </p>
+          <p class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span class="font-semibold text-[var(--ink-primary)]">Quickstart:</span>
+            <code
+              class="rounded-md bg-[var(--surface-card)] px-2 py-0.5 text-xs font-semibold text-[var(--accent-primary)]"
+            >
+              npx @researchhq/cli init &amp;&amp; npx @researchhq/cli sync
+            </code>
+          </p>
+          <p class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+            <a
+              href="https://github.com/Robinlovelace/researchhq"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1 font-semibold text-[var(--accent-primary)] underline hover:opacity-80"
+            >
+              <Github class="h-3.5 w-3.5" aria-hidden="true" />
+              <span>GitHub Repository</span>
+              <ExternalLink class="h-3 w-3" aria-hidden="true" />
+            </a>
+            <a
+              href="https://robinlovelace.net/research/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1 font-semibold text-[var(--accent-primary)] underline hover:opacity-80"
+            >
+              <span>Live real-world example (Prof. Robin Lovelace)</span>
+              <ExternalLink class="h-3 w-3" aria-hidden="true" />
+            </a>
+          </p>
+          <p class="mt-2 text-xs font-medium text-[var(--ink-secondary)]">
+            Exploring synthetic example dataset: Dr Alex Rivera (Demo Persona)
+          </p>
+        </div>
+      </section>
+    {/if}
     <div class="mx-auto max-w-7xl px-4 pt-5 pb-0 sm:px-6 lg:px-8">
       <div class="flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
@@ -384,16 +445,20 @@
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-4">
-          <button
-            type="button"
-            onclick={() => {
-              demoMode = !demoMode;
-              void loadDemoSnapshotIfNeeded(demoMode);
-            }}
-            class="underline hover:text-[var(--ink-primary)]"
-          >
-            {demoMode ? 'Exit synthetic demo' : 'Switch to synthetic OSS demo'}
-          </button>
+          {#if !data.snapshot.author.name.includes('(Demo Persona)')}
+            <!-- Demo switcher only for real-persona deployments: on /researchhq/
+                 the default snapshot IS the demo, so the toggle would be a no-op. -->
+            <button
+              type="button"
+              onclick={() => {
+                demoMode = !demoMode;
+                void loadDemoSnapshotIfNeeded(demoMode);
+              }}
+              class="underline hover:text-[var(--ink-primary)]"
+            >
+              {demoMode ? 'Exit synthetic demo' : 'Switch to synthetic OSS demo'}
+            </button>
+          {/if}
           {#if activeSnapshot.author.website}
             <a
               href={safeHref(activeSnapshot.author.website) ?? undefined}
