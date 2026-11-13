@@ -1,0 +1,30 @@
+{
+  "name": "@researchhq/dashboard",
+  "version": "0.1.0",
+  "description": "Interactive Svelte 5 + SvelteKit static research portfolio and future-publications planner",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || true",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@lucide/svelte": "^0.577.0",
+    "@researchhq/schema": "*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@sveltejs/adapter-static": "^4.0.1",
+    "@sveltejs/kit": "^3.2.0",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "svelte": "^5.46.1",
+    "svelte-check": "^4.3.5",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@researchhq/schema",
+  "version": "0.1.0",
+  "description": "TypeScript and Zod schemas, portfolio analytics, time-series projection, and public-export sanitizer for ResearchHQ",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

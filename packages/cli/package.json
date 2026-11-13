@@ -1,0 +1,28 @@
+{
+  "name": "@researchhq/cli",
+  "version": "0.1.0",
+  "description": "CLI for syncing OpenAlex works & journal metrics, managing planned papers, and exporting ResearchHQ datasets",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "researchhq": "./dist/bin.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@researchhq/schema": "*",
+    "yaml": "^2.7.0",
+    "zod": "^4.6.7"
+  }
+}
