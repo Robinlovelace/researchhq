@@ -67,7 +67,7 @@ ResearchHQ operationalises a five-stage ladder for both published works and plan
 
 Prerequisites: **Node.js >= 20** and **npm >= 10**.
 
-> **Running the CLI:** Once `@researchhq/cli` is published to npm, every `node ../researchhq/packages/cli/dist/bin.js <cmd>` or `npx @researchhq/cli <cmd>` example below runs directly via `npx @researchhq/cli <cmd>`. Prior to npm publication, invoke `node ../researchhq/packages/cli/dist/bin.js <cmd>` from a built local clone (or `npm run <cmd> --` inside an instance repository).
+> **Running the CLI:** Run immediately today with zero setup via the GitHub Release tarball (`npx https://github.com/Robinlovelace/researchhq/releases/download/v0.1.0/researchhq-cli-0.1.0.tgz <cmd>`), via `npx @researchhq/cli <cmd>` once published to npm, or via `node ../researchhq/packages/cli/dist/bin.js <cmd>` from a local clone.
 
 ### 1. Clone and build ResearchHQ
 

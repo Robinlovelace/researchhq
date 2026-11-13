@@ -1,7 +1,7 @@
 {
   "name": "@researchhq/schema",
   "version": "0.1.0",
-  "description": "TypeScript and Zod schemas, portfolio analytics, time-series projection, and public-export sanitizer for ResearchHQ",
+  "description": "TypeScript and Zod schemas, portfolio analytics, time-series projection, BibTeX export, and public-export sanitizer for ResearchHQ",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -28,20 +28,28 @@
   },
   "author": "Robin Lovelace <Robinlovelace@users.noreply.github.com>",
   "homepage": "https://robinlovelace.net/researchhq/",
+  "bugs": {
+    "url": "https://github.com/Robinlovelace/researchhq/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Robinlovelace/researchhq.git",
+    "url": "git+https://github.com/Robinlovelace/researchhq.git",
     "directory": "packages/schema"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20"
   },
   "keywords": [
     "research",
     "bibliometrics",
     "openalex",
     "open-science",
-    "portfolio"
+    "portfolio",
+    "academic",
+    "zod",
+    "bibtex",
+    "fwci",
+    "journals"
   ],
   "dependencies": {
     "zod": "^4.6.7"

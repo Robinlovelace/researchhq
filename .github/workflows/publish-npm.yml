@@ -1,0 +1,83 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: "publish-npm-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish @researchhq/schema and @researchhq/cli
+    if: github.event_name == 'workflow_dispatch' || vars.NPM_PUBLISHING_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Upgrade npm CLI for OIDC Trusted Publishing support
+        run: npm install -g npm@^11
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Build @researchhq/schema and @researchhq/cli
+        run: |
+          npm run build -w @researchhq/schema
+          npm run build -w @researchhq/cli
+
+      - name: Run unit and pack tests
+        run: npm test
+
+      - name: Publish @researchhq/schema and @researchhq/cli to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${NPM_TOKEN:-}" ]; then
+            echo "NPM_TOKEN is unset; configuring npmrc for npm OIDC Trusted Publishing..."
+            if [ -n "${NPM_CONFIG_USERCONFIG:-}" ] && [ -f "${NPM_CONFIG_USERCONFIG}" ]; then
+              grep -v '_authToken' "${NPM_CONFIG_USERCONFIG}" > "${NPM_CONFIG_USERCONFIG}.tmp" || true
+              mv "${NPM_CONFIG_USERCONFIG}.tmp" "${NPM_CONFIG_USERCONFIG}"
+            fi
+          fi
+
+          publish_workspace() {
+            local pkg_name="$1"
+            local pkg_dir="$2"
+            local pkg_version
+            pkg_version="$(node -p "require('./${pkg_dir}/package.json').version")"
+
+            if npm view "${pkg_name}@${pkg_version}" version >/dev/null 2>&1; then
+              echo "Skipping ${pkg_name}@${pkg_version}: already published on registry.npmjs.org."
+              return 0
+            fi
+
+            echo "Publishing ${pkg_name}@${pkg_version} from ${pkg_dir}..."
+            if ! npm publish -w "${pkg_name}" --access public --provenance; then
+              echo "::error::npm publish failed for ${pkg_name}@${pkg_version}."
+              echo "1. Configure npm OIDC Trusted Publishing on npmjs.com for Robinlovelace/researchhq (.github/workflows/publish-npm.yml) OR add an NPM_TOKEN secret in GitHub Actions settings." >&2
+              echo "2. Trigger Actions -> Publish to npm -> Run workflow (workflow_dispatch) to publish @researchhq/schema and @researchhq/cli." >&2
+              echo "3. Set repository variable NPM_PUBLISHING_ENABLED=true so future GitHub Releases publish automatically." >&2
+              exit 1
+            fi
+          }
+
+          publish_workspace "@researchhq/schema" "packages/schema"
+          publish_workspace "@researchhq/cli" "packages/cli"

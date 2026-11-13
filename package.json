@@ -6,10 +6,24 @@
   "description": "Modular open-source interactive research portfolio and future-publications planning system",
   "license": "MIT",
   "author": "Robin Lovelace <Robinlovelace@users.noreply.github.com>",
+  "homepage": "https://robinlovelace.net/researchhq/",
+  "bugs": {
+    "url": "https://github.com/Robinlovelace/researchhq/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Robinlovelace/researchhq.git"
+    "url": "git+https://github.com/Robinlovelace/researchhq.git"
   },
+  "keywords": [
+    "research",
+    "bibliometrics",
+    "openalex",
+    "open-science",
+    "portfolio",
+    "academic",
+    "sveltekit",
+    "cli"
+  ],
   "workspaces": [
     "packages/schema",
     "packages/cli",
@@ -31,6 +45,6 @@
     "zod": "^4.6.7"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20"
   }
 }
