@@ -177,7 +177,11 @@
               {store.citationMode === 'scholar' && metrics.hIndexScholar
                 ? metrics.hIndexScholar
                 : store.citationMode === 'best'
-                  ? store.liveSummaryStats.hIndexComputed
+                  ? Math.max(
+                      store.liveSummaryStats.hIndexComputed,
+                      metrics.hIndexScholar ?? 0,
+                      metrics.hIndex
+                    )
                   : metrics.hIndex}
             </span>
             <span class="ml-0.5 text-xs font-medium text-[var(--ink-muted)]">h-index</span>
@@ -187,7 +191,11 @@
               {store.citationMode === 'scholar' && scholarI10 !== null
                 ? scholarI10
                 : store.citationMode === 'best'
-                  ? store.liveSummaryStats.i10IndexComputed
+                  ? Math.max(
+                      store.liveSummaryStats.i10IndexComputed,
+                      scholarI10 ?? 0,
+                      metrics.i10Index
+                    )
                   : metrics.i10Index}
             </span>
             <span class="ml-0.5 text-xs font-medium text-[var(--ink-muted)]">i10</span>
