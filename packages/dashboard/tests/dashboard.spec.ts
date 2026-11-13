@@ -87,19 +87,45 @@ test('citation source switcher reactively updates KPI and per-publication citati
 
   const selector = page.locator('#citation-source-select');
 
-  // Google Scholar preferred: author-level total and PCT work citations
-  await selector.selectOption('scholar');
-  await expect(citationsKpi(page)).toHaveText('4,200');
-  await expect(
-    page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
-  ).toHaveText('167');
+  // Only single-source options exist (no 'best' / 'Max' mixed option)
+  const options = selector.locator('option');
+  await expect(options).toHaveCount(2);
+  await expect(options.nth(0)).toHaveAttribute('value', 'openalex');
+  await expect(options.nth(0)).toHaveText('OpenAlex');
+  await expect(options.nth(1)).toHaveAttribute('value', 'scholar');
+  await expect(options.nth(1)).toHaveText('Google Scholar');
+  await expect(selector.locator('option[value="best"]')).toHaveCount(0);
 
-  // OpenAlex only
-  await selector.selectOption('openalex');
+  // Defaults to pure OpenAlex
+  await expect(selector).toHaveValue('openalex');
   await expect(citationsKpi(page)).toHaveText('2,531');
   await expect(
     page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
   ).toHaveText('155');
+  const geocomprItem = page.locator('li').filter({ hasText: 'Geocomputation with R' });
+  await expect(geocomprItem).toHaveCount(1);
+  await expect(geocomprItem).toContainText('2025');
+  await expect(geocomprItem).toContainText('Stage 4');
+  await expect(geocomprItem.locator('span.tabular-nums')).toHaveText('144');
+
+  // Switch to Google Scholar: author-level total and per-work citations (never double-counted across editions)
+  await selector.selectOption('scholar');
+  await expect(selector).toHaveValue('scholar');
+  await expect(citationsKpi(page)).toHaveText('4,200');
+  await expect(
+    page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
+  ).toHaveText('167');
+  await expect(geocomprItem).toHaveCount(1);
+  await expect(geocomprItem.locator('span.tabular-nums')).toHaveText('204');
+
+  // Switch back to OpenAlex
+  await selector.selectOption('openalex');
+  await expect(selector).toHaveValue('openalex');
+  await expect(citationsKpi(page)).toHaveText('2,531');
+  await expect(
+    page.locator('li').filter({ hasText: 'Propensity to Cycle Tool' }).locator('span.tabular-nums')
+  ).toHaveText('155');
+  await expect(geocomprItem.locator('span.tabular-nums')).toHaveText('144');
 
   // The KPI helper text always names both sources
   await expect(page.getByText(/OpenAlex: 2,531 · Scholar: 4,200\+/)).toBeVisible();

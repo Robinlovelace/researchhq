@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-11-13T14:05:41.479Z",
+  "generatedAt": "2026-11-13T15:46:01.564Z",
   "sanitized": true,
   "author": {
     "name": "Robin Lovelace",
@@ -14,26 +14,26 @@
     "bluesky": "https://bsky.app/profile/robinlovelace.bsky.social",
     "bio": "Professor of Transport Data Science at the Institute for Transport Studies, University of Leeds, Associate Fellow at LIDA, former Alan Turing Fellow, and former Director of Data and Digital (2022 secondment) and Head of Data and Digital (2023-2024, part-time) at Active Travel England. Lead developer and co-author of nationally deployed open-source transport planning tools and books including the Propensity to Cycle Tool (PCT), Network Planning Tool for Scotland (NPT), CRUSE, Bicischools, SpanishODData, and Geocomputation with R and Python.",
     "metrics": {
-      "worksCount": 202,
+      "worksCount": 185,
       "peerReviewedCount": 69,
       "citedByCount": 2531,
       "citedByCountProfile": 2536,
       "citedByScholar": 4200,
       "hIndex": 27,
       "hIndexScholar": 33,
-      "i10Index": 51,
+      "i10Index": 50,
       "i10IndexScholar": 64,
       "twoYearMeanCitedness": 1.3962264150943395,
-      "oaPercentage": 52.5,
+      "oaPercentage": 56.2,
       "stageCounts": {
-        "0": 79,
-        "1": 70,
+        "0": 64,
+        "1": 68,
         "2": 7,
         "3": 32,
         "4": 10,
         "5": 4
       },
-      "updatedAt": "2026-11-13T14:05:41.479Z"
+      "updatedAt": "2026-11-13T15:46:01.564Z"
     }
   },
   "publications": [
@@ -126,81 +126,6 @@
       "featured": true
     },
     {
-      "id": "W2959847940",
-      "doi": "10.1201/9780203730058",
-      "openalexId": "W2959847940",
-      "title": "Geocomputation with R",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 131,
-      "citationsOpenAlex": 131,
-      "citationsScholar": 204,
-      "citationsByYear": [
-        {
-          "year": 2026,
-          "citedByCount": 13
-        },
-        {
-          "year": 2025,
-          "citedByCount": 14
-        },
-        {
-          "year": 2024,
-          "citedByCount": 14
-        },
-        {
-          "year": 2023,
-          "citedByCount": 23
-        },
-        {
-          "year": 2022,
-          "citedByCount": 21
-        },
-        {
-          "year": 2021,
-          "citedByCount": 23
-        },
-        {
-          "year": 2020,
-          "citedByCount": 13
-        },
-        {
-          "year": 2019,
-          "citedByCount": 8
-        },
-        {
-          "year": 2018,
-          "citedByCount": 2
-        }
-      ],
-      "fwci": 6.1579,
-      "abstract": "Geocomputation with R is for people who want to analyze, visualize and model geographic data with open source software. It is based on R, a statistical programming language that has powerful data processing, visualization, and geospatial capabilities. The book equips you with the knowledge and skills to tackle a wide range of issues manifested in geographic data, including those with scientific, societal, and environmental implications. This book will interest people from many backgrounds, especially Geographic Information Systems (GIS) users interested in applying their domain-specific knowledge in a powerful open source language for data science, and R users interested in extending their skills to handle spatial data. The book is divided into three parts: (I) Foundations, aimed at getting you up-to-speed with geographic data in R, (II) extensions, which covers advanced techniques, and (III) applications to real-world problems. The chapters cover progressively more advanced topics, with early chapters providing strong foundations on which the later chapters build. Part I describes the nature of spatial datasets in R and methods for manipulating them. It also covers geographic data import/export and transforming coordinate reference systems. Part II represents methods that build on these foundations. It covers advanced map making (including web mapping), \"bridges\" to GIS, sharing reproducible code, and how to do cross-validation in the presence of spatial autocorrelation. Part III applies the knowledge gained to tackle real-world problems, including representing and modeling transport systems, finding optimal locations for stores or services, and ecological modeling. Exercises at the end of each chapter give you the skills needed to tackle a range of geospatial problems. Solutions for each chapter and supplementary materials providing extended examples are available at https://geocompr.github.io/geocompkg/articles/.",
-      "topics": [
-        "Data Analysis with R",
-        "Spatial and Panel Data Analysis",
-        "Geographic Information Systems Studies"
-      ],
-      "openScienceStage": 4,
-      "openScience": {
-        "oaStatus": "green",
-        "oaUrl": "https://r.geocompx.org/",
-        "codeUrl": "https://github.com/geocompx/geocompr",
-        "reproducibleRepoUrl": "https://github.com/geocompx/geocompr",
-        "rationale": "Openly licensed book (first and 2025 second editions free online at r.geocompx.org) with fully reproducible Quarto source code, exercises, and continuous integration builds."
-      },
-      "url": "https://r.geocompx.org/",
-      "featured": true
-    },
-    {
       "id": "W4409802704",
       "doi": "10.1201/9781003280569",
       "openalexId": "W4409802704",
@@ -216,17 +141,45 @@
         "Jannes Muenchow"
       ],
       "authorPosition": "first",
-      "citations": 13,
-      "citationsOpenAlex": 13,
+      "citations": 144,
+      "citationsOpenAlex": 144,
       "citationsScholar": 204,
       "citationsByYear": [
         {
-          "year": 2026,
-          "citedByCount": 6
+          "year": 2018,
+          "citedByCount": 2
+        },
+        {
+          "year": 2019,
+          "citedByCount": 8
+        },
+        {
+          "year": 2020,
+          "citedByCount": 13
+        },
+        {
+          "year": 2021,
+          "citedByCount": 23
+        },
+        {
+          "year": 2022,
+          "citedByCount": 21
+        },
+        {
+          "year": 2023,
+          "citedByCount": 23
+        },
+        {
+          "year": 2024,
+          "citedByCount": 14
         },
         {
           "year": 2025,
-          "citedByCount": 7
+          "citedByCount": 21
+        },
+        {
+          "year": 2026,
+          "citedByCount": 19
         }
       ],
       "fwci": 11.5928,
@@ -236,12 +189,16 @@
         "Spatial and Panel Data Analysis",
         "Geographic Information Systems Studies"
       ],
-      "openScienceStage": 1,
+      "openScienceStage": 4,
       "openScience": {
         "oaStatus": "hybrid",
-        "oaUrl": "https://api.taylorfrancis.com/content/books/mono/download?identifierName=doi&identifierValue=10.1201/9781003280569&type=googlepdf"
+        "oaUrl": "https://r.geocompx.org/",
+        "codeUrl": "https://github.com/geocompx/geocompr",
+        "reproducibleRepoUrl": "https://github.com/geocompx/geocompr",
+        "rationale": "Openly licensed book (first and 2025 second editions free online at r.geocompx.org) with fully reproducible Quarto source code, exercises, and continuous integration builds."
       },
-      "url": "https://api.taylorfrancis.com/content/books/mono/download?identifierName=doi&identifierValue=10.1201/9781003280569&type=googlepdf"
+      "url": "https://r.geocompx.org/",
+      "featured": true
     },
     {
       "id": "W2754646484",
@@ -995,7 +952,7 @@
           "citedByCount": 1
         }
       ],
-      "fwci": 14.6179,
+      "fwci": 14.6214,
       "abstract": "Iterative Proportional Fitting (IPF), also known as biproportional fitting, 'raking' or the RAS algorithm, is an established procedure used in a variety of applications across the social sciences. Primary amongst these for urban modelling has been its use in static spatial microsimulation to generate small area microdata – individual level data allocated to administrative zones. The technique is mature, widely used and relatively straight-forward. Although IPF is well described mathematically, accessible examples of the algorithm written in modern programming languages are rare. There is a tendency for researchers to 'start from scratch', resulting in a variety of ad hoc implementations and little evidence about the relative merits of differing approaches. These knowledge gaps mean that answers to certain methodological questions must be guessed: How can 'empty cells' be identified and how do they influence model fit? Can IPF be made more computationally efficient? This paper tackles these questions and more using a systematic methodology with publicly available code and data. The results demonstrate the sensitivity of the results to initial conditions, notably the presence of 'empty cells', and the dramatic impact of software decisions on computational efficiency. The paper concludes by proposing an agenda for robust and transparent future tests in the field.",
       "topics": [
         "demographic modeling and climate adaptation",
@@ -2765,7 +2722,7 @@
           "citedByCount": 4
         }
       ],
-      "fwci": 1.4873,
+      "fwci": 1.465,
       "abstract": "Abstract This paper describes an approach for developing strategic cycle network planning tools. Based on our experience developing and deploying the Cycle Route Uptake and Scenario Estimation (CRUSE) Tool for Ireland, we outline the underlying methods, including disaggregation of origin–destination data with the open source ‘odjitter’ software, incorporation of additional trip purposes, routing, scenario generation, and development of an intuitive user interface that is tested and used by practitioners. Commissioned by the national infrastructure agency Transport Infrastructure Ireland, CRUSE provides estimates of current and potential future cycling levels under ‘snapshot’ scenarios to inform investment decisions. The publicly available results at https://cruse.bike/ enable planners, engineers, and other stakeholders to make more evidence-based decisions. CRUSE goes beyond previous work by: modeling networks at high spatial resolution; simulating multiple trip purposes (social, shopping, personal utility, recreational, and cycle touring), supplementing official origin–destination datasets on travel for work and education; and providing estimates of ‘quietness’ (a proxy for cyclist comfort and route preference) at the route segment level. Three network types—‘Fastest’, ‘Balanced’, and ‘Quietest’—help plan both arterial and residential cycle networks. Workshops with stakeholders were used to inform the development of the tool. Feedback shows that the tool has a wide range of uses and is already being used in practice to inform urban, inter-urban, and rural cycle network designs. The approach is flexible and open source, allowing the underlying ideas and code to be adapted, supporting more evidence-based and effective cycling policies and interventions internationally.",
       "topics": [
         "Urban Transport and Accessibility",
@@ -3101,7 +3058,7 @@
           "citedByCount": 4
         }
       ],
-      "fwci": 1.0542,
+      "fwci": 1.0429,
       "abstract": "Pedal cycling is advocated for increasing physical activity and promoting health and wellbeing. However, whilst some countries have achieved zero cyclist deaths on their roads, this is not the case for Great Britain (GB). A retrospective cross-sectional analysis was conducted of STATS19 cyclist crash data, a dataset of all police-reported traffic crashes in GB. Information about crash location, casualty, driver and vehicles involved were included as predictors of casualty severity (fatal or severe vs. slight). Sixteen thousand one hundred seventy pedal cycle crashes were reported during 2018. Severe or fatal cyclist crash injury was associated with increasing age of the cyclist (35-39 years, OR 1.38, 95% CI 1.11 to 1.73; 55-59 years, OR 1.73, 95% CI 1.35 to 2.2; 70 years and over, OR 2.87, 95% CI 2.12 to 3.87), higher road speed limits (50 MPH OR 2.10, 95% CI 1.43 to 3.07; 70 MPH OR 4.12, 95% CI 2.12 to 8.03), the involvement of goods vehicles (OR 2.08, 95% CI 1.30 to 3.33) and the months of May and June (OR 1.34 to 1.36, 95% CI 1.06 to 1.73). Urban planning that includes physical separation of pedal cyclists from other road users, raising awareness around the risks from goods vehicles and reducing road speed should be the urgent focus of interventions to increase the benefits and safety of cycling.",
       "topics": [
         "Traffic and Road Safety",
@@ -3545,7 +3502,7 @@
           "citedByCount": 1
         }
       ],
-      "fwci": 0.5562,
+      "fwci": 0.5501,
       "abstract": "A lack of cycle parking is a known barrier to promoting the uptake of cycling in urban areas. Unlike cars that can be parked on the roadside with little additional infrastructure, bikes usually require dedicated parking facilities. The existing research and guidance on where cycle parking should be provided primarily focuses on key destinations such as train stations or schools. Thus, there is a gap in knowledge about the amount of general-purpose cycle parking required and how it should be distributed across a city. This paper presents a novel method for analysing and prioritising the spatial distribution of cycle parking. The method draws on established portfolio management techniques but applies them in a spatial context. Using the case study of London, we demonstrate that it is possible to identify areas that have a deficit of cycle parking as well as locations that have the most significant potential for increasing cycling uptake by providing additional cycle parking.",
       "topics": [
         "Urban Transport and Accessibility",
@@ -3681,7 +3638,7 @@
           "citedByCount": 1
         }
       ],
-      "fwci": 4.3856,
+      "fwci": 4.2848,
       "abstract": "Route network datasets are fundamental to transport models, serving as both inputs for analysis and outputs for visualization and decision-making. The increasing complexity of route network data from sources like OpenStreetMap allows for more detailed modelling of sustainable transport modes such as walking and cycling. However, this level of detail can introduce challenges for the clear visualization and interpretation of model results. A common problem is the representation of single transport corridors by multiple parallel lines, which can create visual clutter and obscure important patterns in transport flows. The purpose of the work presented in this paper is to provide a basis for computationally efficient analysis and visualization of route networks for strategic transport planning, where intricate geometries, such as parallel or ‘braided’ linestrings, are unhelpful. We present and evaluate two distinct methods for simplifying complex route networks that are intended to be used as a ‘pre-processing’ step to speed up and improve the results of strategic transport network analysis, modelling, and visualization workflows. First, we present skeletonization, an approach that uses ‘thinning’ of rasterized network data to extract a simplified representation of the network. Second, we present a Voronoi-based approach using Voronoi diagrams to identify centrelines. We demonstrate the practical application of these methods using the ‘Simplified network’ layer in the Transport for Scotland-funded Network Planning Tool, a publicly accessible resource at https://www.npt.scot . To support reproducible research, we implement the methods in the open-source parenx Python package, enabling their use alongside other open source tools for transport planning, research, and educational applications.",
       "topics": [
         "Geographic Information Systems Studies",
@@ -3945,56 +3902,6 @@
       "url": "https://dspace.lboro.ac.uk/2134/34103"
     },
     {
-      "id": "W4237743748",
-      "doi": "10.1201/9780203730058-1",
-      "openalexId": "W4237743748",
-      "title": "Introduction",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 5,
-      "citationsOpenAlex": 5,
-      "citationsScholar": null,
-      "citationsByYear": [
-        {
-          "year": 2025,
-          "citedByCount": 1
-        },
-        {
-          "year": 2024,
-          "citedByCount": 1
-        },
-        {
-          "year": 2023,
-          "citedByCount": 1
-        },
-        {
-          "year": 2021,
-          "citedByCount": 2
-        }
-      ],
-      "fwci": 4.4916,
-      "abstract": "This introduction presents an overview of the key concepts discussed in the subsequent chapters of this book. The book is about using the power of computers to do things with geographic data. It teaches a range of spatial skills, including: reading, writing and manipulating geographic data; making static and interactive maps; applying geocomputation to solve real-world problems; and modeling geographic phenomena. The book aims to make reproducible geographic data analysis workflows more accessible, and demonstrate the power of open geospatial software available from the command-line. It also aims at teaching methods and code; by the end of it one should be able to use geocomputational skills, to do “practical work that is beneficial or useful”. Geocomputation is closely related to other terms including: Geographic Information Science; Geomatics; Geoinformatics; Spatial Information Science; Geoinformation Engineering; and Geographic Data Science.",
-      "topics": [
-        "Geographic Information Systems Studies",
-        "Computational Physics and Python Applications",
-        "Spatial and Panel Data Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-1"
-    },
-    {
       "id": "W4409803418",
       "doi": "10.1201/9781003280569-1",
       "openalexId": "W4409803418",
@@ -4010,10 +3917,27 @@
         "Jannes Muenchow"
       ],
       "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
+      "citations": 5,
+      "citationsOpenAlex": 5,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": [
+        {
+          "year": 2021,
+          "citedByCount": 2
+        },
+        {
+          "year": 2023,
+          "citedByCount": 1
+        },
+        {
+          "year": 2024,
+          "citedByCount": 1
+        },
+        {
+          "year": 2025,
+          "citedByCount": 1
+        }
+      ],
       "fwci": 0,
       "abstract": "This chapter introduces the book, defines geocomputation, and explains why R is an excellent language for reproducible analysis, visualization, and modeling of geographic data. Placing geocomputation in the wider history of geographic information and associated technologies, this opening chapter traces the history of geocomputation back to its roots in the late 1990s, when the term was defined as a creative and methods-orientated approach to working with geographic data. We define geocomputation in the context of the free and open source software (FOSS4G) movement, with a focus on reproducible code. R excels as a language for geocomputation, with its inbuilt interfaces to other software, interactive command-line and 20,000+ add-on packages that extend it in myriad directions. The chapter describes how R relates to other established languages for geocomputation, including C++, Python and Java, and explains the choice of packages used in subsequent chapters with reference to the history of ‘R-spatial’.",
       "topics": [
@@ -4205,12 +4129,12 @@
       "url": "https://doi.org/10.2139/ssrn.5134348"
     },
     {
-      "id": "W4240270422",
-      "doi": "10.1201/9780203730058-5",
-      "openalexId": "W4240270422",
+      "id": "W4409803462",
+      "doi": "10.1201/9781003280569-6",
+      "openalexId": "W4409803462",
       "title": "Geometry operations",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
+      "year": 2025,
+      "publicationDate": "2025-04-25",
       "type": "book-chapter",
       "venue": "Chapman & Hall/CRC eBooks",
       "journalId": "chapman-and-hall-crc-ebooks",
@@ -4229,39 +4153,6 @@
           "citedByCount": 1
         }
       ],
-      "fwci": 0,
-      "abstract": "This chapter covers transforming vector geometries with ‘unary’ and ‘binary’ operations. It also covers geometric transformations on raster objects. This involves changing the size and number of the underlying pixels, and assigning them new values. The chapter shows how raster values can be ‘masked’ and ‘extracted’ by vector geometries. It explains how to ‘polygonize’ rasters and ‘rasterize’ vector datasets, making the two data models more interchangeable. Simplification is a process for generalization of vector objects (lines and polygons) usually for use in smaller scale maps. The most commonly used centroid operation is the geographic centroid. This type of centroid operation represents the center of mass in a spatial object. Buffers are polygons representing the area within a given distance of a geometric feature: regardless of whether the input is a point, line or polygon, the output is a polygon.",
-      "topics": [
-        "Geographic Information Systems Studies",
-        "Computational Physics and Python Applications",
-        "Data Management and Algorithms"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-5"
-    },
-    {
-      "id": "W4409803462",
-      "doi": "10.1201/9781003280569-6",
-      "openalexId": "W4409803462",
-      "title": "Geometry operations",
-      "year": 2025,
-      "publicationDate": "2025-04-25",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
       "fwci": 0,
       "abstract": "This chapter explains and shows how to control the geometry column in geographic vector data, as well as the geographic location of pixels represented in rasters. For vector data, it covers transforming vector geometries with ‘unary’ and ‘binary’ operations. Unary operations, which work on a single geometry in isolation, offer a versatile range of functions. These include simplifying lines and polygons, creating centroids and buffers, and shifting, scaling, and rotating single geometries using affine transformations. Binary transformations modify one geometry based on the shape of another and include clipping and geometry unions. Additionally, type transformations, from a polygon to a line, are demonstrated in this chapter. For raster data, it shows how to change the size and number of the underlying pixels and assign them new values. It provides ways to update the raster’s extent and origin, which is essential for aligning raster datasets from different sources. It also teaches how to change the resolution of a raster dataset by aggregation, disaggregation, and various resampling methods (e.g., nearest neighbor, bilinear, cubic interpolation).",
       "topics": [
@@ -4688,48 +4579,6 @@
       "url": "https://openlibrary.org/books/OL26837414M/Efficient_R_Programming_A_Practical_Guide_to_Smarter_Programming"
     },
     {
-      "id": "W4242139039",
-      "doi": "10.1201/9780203730058-11",
-      "openalexId": "W4242139039",
-      "title": "Statistical learning",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 2,
-      "citationsOpenAlex": 2,
-      "citationsScholar": null,
-      "citationsByYear": [
-        {
-          "year": 2024,
-          "citedByCount": 1
-        },
-        {
-          "year": 2023,
-          "citedByCount": 1
-        }
-      ],
-      "fwci": 0,
-      "abstract": "Statistical learning is concerned with the use of statistical and computational models for identifying patterns in data and predicting from these patterns. Statistical learning combines methods from statistics and machine learning and its methods can be categorized into supervised and unsupervised techniques. The primary aim of much machine learning research is to make good predictions, as opposed to statistical/Bayesian inference, which is good at helping to understand underlying mechanisms and uncertainties in the data. The mlr package facilitates resampling techniques in combination with the most popular statistical learning techniques including linear regression, semi-parametric models such as generalized additive models and machine learning techniques such as random forests, Support Vector Machine’s, and boosted regression trees. Machine learning algorithms often require hyperparameter inputs, the optimal ‘tuning’ of which can require thousands of model runs which require large computational resources, consuming much time, RAM and/or cores.",
-      "topics": [
-        "Data Analysis with R",
-        "Machine Learning and Data Classification",
-        "Statistical Methods and Inference"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-11"
-    },
-    {
       "id": "W4409802859",
       "doi": "10.1201/9781003280569-14",
       "openalexId": "W4409802859",
@@ -4745,10 +4594,19 @@
         "Jannes Muenchow"
       ],
       "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
+      "citations": 2,
+      "citationsOpenAlex": 2,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": [
+        {
+          "year": 2023,
+          "citedByCount": 1
+        },
+        {
+          "year": 2024,
+          "citedByCount": 1
+        }
+      ],
       "fwci": 0,
       "abstract": "This chapter covers statistical learning with a focus on supervised learning techniques for geographic data. It explains the concept of spatial autocorrelation, how this often results in an over-optimistic model performance and how to alleviate this bias with the help of spatial cross-validation. The chapter introduces the mlr3 package to do so in a streamlined fashion for any modeling technique - be it a simple linear regression or an advanced machine learning algorithm - or to compare model performance across modeling algorithms. A case study on landslide susceptibility in Southern Ecuador demonstrates these concepts.",
       "topics": [
@@ -4837,12 +4695,12 @@
       "url": "https://doi.org/10.1016/j.jth.2018.05.054"
     },
     {
-      "id": "W3000482523",
-      "doi": "10.1201/9780203730058-2",
-      "openalexId": "W3000482523",
+      "id": "W4409803451",
+      "doi": "10.1201/9781003280569-3",
+      "openalexId": "W4409803451",
       "title": "Geographic data in R",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
+      "year": 2025,
+      "publicationDate": "2025-04-25",
       "type": "book-chapter",
       "venue": "Chapman & Hall/CRC eBooks",
       "journalId": "chapman-and-hall-crc-ebooks",
@@ -4861,39 +4719,6 @@
           "citedByCount": 1
         }
       ],
-      "fwci": 0,
-      "abstract": "This chapter provides explanations of the fundamental geographic data models: vector and raster. It introduces the theory behind each data model and the disciplines in which they predominate, before demonstrating their implementation in R. Take care when using the word ‘vector’ as it can have two meanings in this book: geographic vector data and the vector class in R. The geographic vector data model is based on points located within a coordinate reference system. The geographic raster data model usually consists of a raster header and a matrix representing equally spaced cells. Raster maps usually represent continuous phenomena such as elevation, temperature, population density or spectral data. The raster data model divides the surface up into cells of constant size. Raster datasets are the basis of background images used in web-mapping and have been a vital source of geographic data since the origins of aerial photography and satellite-based remote sensing devices.",
-      "topics": [
-        "Data Analysis with R",
-        "Geographic Information Systems Studies",
-        "Spatial and Panel Data Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-2"
-    },
-    {
-      "id": "W4409803451",
-      "doi": "10.1201/9781003280569-3",
-      "openalexId": "W4409803451",
-      "title": "Geographic data in R",
-      "year": 2025,
-      "publicationDate": "2025-04-25",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
       "fwci": 0,
       "abstract": "This chapter explains the two fundamental geographic data models: vector and raster. The vector data model represents the world using points, lines and polygons; the raster data model divides the Earth into cells of constant size. Whether your work involves more use of vector or raster datasets, it is worth understanding the underlying data model before using them, as discussed in subsequent chapters. This chapter shows how raster and vector geographic datasets are represented as classes in the sf and terra packages, respectively, providing a foundation for the rest of the book. A fundamental concept shared by the vector and raster spatial data types is the Coordinate Reference System (CRS), which defines how the spatial elements of the data relate to the surface of the Earth (or other bodies). This chapter also covers both geographic and projected CRSs and how they relate to units such as meters and degrees of latitude and longitude.",
       "topics": [
@@ -5049,7 +4874,7 @@
           "citedByCount": 1
         }
       ],
-      "fwci": 0.6242,
+      "fwci": 0.6228,
       "abstract": "Darkness discourages cycling. A major reason for this is perceptions of safety – cycling after dark feels more dangerous as it is more difficult to see hazards in the path, and the cyclist is less conspicuous to motorists. Are these perceptions justified? To find out we assessed the accuracy of such perceptions by analysing crash data from Great Britain to understand the risk darkness poses to cyclists. We found that darkness increases the risk of being involved in a crash, but we did not find darkness increases the risk of being killed, while cycling. However, we did find that the odds of a cyclist being killed in a crash after dark are eight times higher on unlit roads than on lit roads, before accounting for confounding variables such as road speed limits and other road characteristics associated with presence/absence of lighting. These findings help develop the evidence that is needed to ensure cyclists are accounted for in lighting design guidance.",
       "topics": [
         "Traffic and Road Safety",
@@ -6843,39 +6668,6 @@
       "url": "http://eprints.whiterose.ac.uk/135895/1/GISRUK2018_Contribution_121.pdf"
     },
     {
-      "id": "W2998812121",
-      "doi": "10.1201/9780203730058-10",
-      "openalexId": "W2998812121",
-      "title": "Scripts, algorithms and functions",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "This chapter teaches the building blocks of reproducible code. It also introduces low-level geometric algorithms. The chapter covers scripts that are the basis of reproducible R code and explains that algorithms are recipes for modifying inputs using a series of steps, resulting in an output. If functions distributed in packages are the building blocks of R code, scripts are the glue that holds them together, in a logical order, to create reproducible workflows. To programming novices scripts may sound intimidating but they are simply plain text files, typically saved with an extension representing the language they contain. R scripts are generally saved with a.R extension and named to reflect what they do. Algorithms can be understood as the computing equivalent of a cooking recipe. They are a complete set of instructions which, when undertaken on the input (ingredients), result in useful (tasty) outputs. Like algorithms, functions take an input and return an output.",
-      "topics": [
-        "Data Analysis with R",
-        "Scientific Computing and Data Management",
-        "Teaching and Learning Programming"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-10"
-    },
-    {
       "id": "W4409802896",
       "doi": "10.1201/9781003280569-13",
       "openalexId": "W4409802896",
@@ -6894,7 +6686,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter goes beyond teaching spatial data analysis with existing packages by introducing the principles of algorithm design and reproducible code for developing new scripts and functions for geocomputation. Reading it shouldwill help you to understand how ‘geoalgorithms’ work and how to write high quality and reproducible code that can be used many times, by many people, on multiple datasets. The advantages of reproduciblity go beyond allowing others to replicate your work: reproducible code is often better in every way than code written to be run only once, including in terms of computational efficiency, scalability and ease of adapting and maintaining it. Scripts, functions, and algorithms are the basis of programming in R and other languages. The practical example of finding the centroid of a polygon is used to demonstrate and teach effective programming practices that can be applied to a wide range of geocomputation tasks.",
       "topics": [
@@ -6907,39 +6699,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-13"
-    },
-    {
-      "id": "W2998940272",
-      "doi": "10.1201/9780203730058-4",
-      "openalexId": "W2998940272",
-      "title": "Spatial data operations",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "Spatial operations are a vital part of geocomputation. This chapter shows how spatial objects can be modified in a multitude of ways based on their location and shape. It focuses on vector attribute manipulation provides the basis for understanding its spatial counterpart, namely spatial subsetting. For many applications, the most important spatial operation on raster objects is map algebra. The chapter provides an overview of spatial operations on vector geographic data represented as simple features in the library package, which presents spatial methods using the raster package. Spatial subsetting is the process of selecting features of a spatial object based on whether or not they in some way relate in space to another object. It is analogous to attribute subsetting and can be done with the base R square bracket operator or with the filter function from the tidyverse.",
-      "topics": [
-        "Data Analysis with R",
-        "Spatial and Panel Data Analysis",
-        "Geographic Information Systems Studies"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-4"
     },
     {
       "id": "W4409802580",
@@ -6960,7 +6719,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter covers spatial operations, a vital skill when working with geographic data. It explains how to modify spatial objects based on location and shape and relations to other objects. You will learn how to do ‘spatial subsetting’ whereby spatial entities in one dataset are selected based on their location relative to another dataset, how to use a variety of ‘topological relations’, and how to calculate the distances between spatial entities. Vector data aggregation (e.g. how many points per zone and summaries of their attributes) and joining (e.g. adding attributes from one dataset to another, with spatial location used to match records) are also covered. The chapter also shows how to subset rasters based on location and coordinates, merging different raster tiles into a single dataset, and how to use ‘raster algebra’ to perform operations on raster data. The final section shows how raster algebra operations can be expressed concisely and and used as the basis of distance calculations on rasters.",
       "topics": [
@@ -6973,39 +6732,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-5"
-    },
-    {
-      "id": "W2999162580",
-      "doi": "10.1201/9780203730058-7",
-      "openalexId": "W2999162580",
-      "title": "Geographic data I/O",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "This chapter requires the following packages: library(sf) library(raster) library(dplyr) library(spData). It is about reading and writing geographic data. Geographic data import is essential for geocomputation: real-world applications are impossible without data. Geographic data I/O is almost always part of a wider process. It depends on knowing which datasets are available, where they can be found and how to retrieve them. To further ease data access, a number of packages for downloading geographic data have been developed. There are many geographic file formats, each of which has pros and cons. A vast and ever-increasing amount of geographic data is available on the internet, much of which is free to access and use. In some ways there is now too much data, in the sense that there are often multiple places to access the same dataset. Exploring datasets interactively on a browser is an effective way of understanding available layers.",
-      "topics": [
-        "Data Analysis with R",
-        "Geographic Information Systems Studies",
-        "Spatial and Panel Data Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-7"
     },
     {
       "id": "W4409802893",
@@ -7026,7 +6752,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter is about reading and writing geographic data, a process also known as data input-output (I/O). Geographic data I/O is almost always part of a wider process. It depends on knowing which datasets are available, where they can be found, and how to retrieve them. Geographic data import is essential for geocomputation: real-world applications are impossible without data. For others to benefit from the results of your work, data output is also vital. A wide range of geographic file formats are described, and their pros and cons are listed. This chapter demonstrates how to read and write geographic file formats efficiently. Next, it covers how to access open access geoportals which collectively contain many terabytes of data, and how to use various existing R packages to access them. We also show here how to read and create geographic metadata and work with geographic web services from R. The final section demonstrates methods for saving visual outputs (maps) in preparation for the following chapter on visualization.",
       "topics": [
@@ -7039,39 +6765,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-9"
-    },
-    {
-      "id": "W2999208342",
-      "doi": "10.1201/9780203730058-3",
-      "openalexId": "W2999208342",
-      "title": "Attribute data operations",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "Attribute data is non-spatial information associated with geographic (geometry) data. A bus stop provides a simple example: its position would typically be represented by latitude and longitude coordinates (geometry data), in addition to its name. This chapter focuses on manipulating geographic objects based on attributes such as the name of a bus stop and elevation. It demonstrates how to join data onto simple feature objects using a shared ID and how to create new variables, respectively. The chapter covers raster attribute data operations, which covers creating continuous and categorical raster layers and extracting cell values from one layer and multiple layers. It provides an overview of ‘global’ raster operations which can be used to characterize entire raster datasets. Geographic vector data in R are well supported by library (sf), a class which extends the data.frame. Thus sf objects have one column per attribute variable and one row per observation, or feature.",
-      "topics": [
-        "Data Analysis with R",
-        "Spatial and Panel Data Analysis",
-        "Geographic Information Systems Studies"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-3"
     },
     {
       "id": "W4409802742",
@@ -7092,7 +6785,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "The focus of this chapter is manipulating geographic objects based on attributes such as the name of a bus stop and values in a raster dataset representing elevation. For vector data this means operations such as subsetting and aggregation. These non-spatial operations have spatial equivalents: the subsetting operator in base R, for example, works in the same way for attribute and spatial subsetting. This means that skills developed here are cross-transferable; this chapter lays the foundation for spatial data operations. The chapter also shows how to join data onto simple feature objects using a shared ID and how to create new variables, vital skills for adding value to geographic datasets. Raster attribute data operations are also covered in this chapter. We will see how to create continuous and categorical raster layers and extract cell values from one layer and multiple layers (raster subsetting). The final section provides an overview of ‘global’ operations which can be used to characterize entire raster datasets.",
       "topics": [
@@ -7105,39 +6798,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-4"
-    },
-    {
-      "id": "W2999470402",
-      "doi": "10.1201/9780203730058-8",
-      "openalexId": "W2999470402",
-      "title": "Making maps with R",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "Map making — the art of cartography — is an ancient skill that involves communication, intuition, and an element of creativity. It is possible to create advanced maps using base R methods, but this chapter focuses on dedicated map-making packages. A carefully crafted map is vital for effectively communicating the results of work: Amateur-looking maps can undermine audience’s ability to understand important information and weaken the presentation of a professional data investigation. Maps have been used for several thousand years for a wide variety of purposes. The chapter shows how to make a wide range of maps and covers animated and interactive maps (including web maps and mapping applications). It also covers a range of alternative map-making packages including ggplot2 and cartogram. Static maps are the most common type of visual output from geocomputation. Fixed images for printed outputs, common formats for static maps include.png and.pdf, for raster and vector outputs, respectively.",
-      "topics": [
-        "Data Analysis with R",
-        "Geographic Information Systems Studies",
-        "Data Visualization and Analytics"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-8"
     },
     {
       "id": "W4409802857",
@@ -7158,7 +6818,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter is the first in the second part of the book (Extensions) on more advanced topics in geocomputation, and provides a comprehensive guide to geographic data visualization (also known as cartography or mapping) from the command line to generate reproducible and publication-ready maps. It shows how to make a wide range of maps, from simple static maps to web mapping applications hosted on a server. The first section introduces the topic and highlights the importance of maps for communicating geographical research results. The second section focuses on a spatial visualization power tool: the tmap package. It covers a range of static maps, including aesthetic considerations, facets, and inset maps. The chapter also teaches how to make animated maps, ideal for showing how geographic phenomena change over time based on time-series data, and interactive maps, which allow you and others to explore geographic information by panning and zooming around a ‘slippy’ web map, and how to build web mapping applications. The final section covers a range of alternative map-making packages including ggplot2 and cartogram, each offering unique features and capabilities.",
       "topics": [
@@ -7171,39 +6831,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-11"
-    },
-    {
-      "id": "W2999742710",
-      "doi": "10.1201/9780203730058-6",
-      "openalexId": "W2999742710",
-      "title": "Reprojecting geographic data",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "This chapter highlights issues that can arise when using inappropriate coordinate reference systems (CRSs) and how to transform data from one CRS to another. There are two types of CRSs: geographic and projected. Datasets without a specified CRS can cause problems. The warning message is useful, telling us that the result may be of limited use because it is in units of latitude and longitude, rather than meters or some other suitable measure of distance assumed by st_buffer(). In real world applications, however, CRSs are usually set automatically when data is read-in. The main task involving CRSs is often to transform objects, from one CRS into another. Custom CRSs with local parameters can be created for a region of interest and multiple CRSs can be used in projects when no single CRS suits all tasks. ‘Geodesic calculations’ can provide a fall-back if no CRSs are appropriate.",
-      "topics": [
-        "Historical Geography and Cartography",
-        "Data Analysis with R",
-        "Geographic Information Systems Studies"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-6"
     },
     {
       "id": "W4409803440",
@@ -7224,7 +6851,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter covers coordinate reference systems (CRSs), how to transform data from one CRS to another, and choosing an appropriate CRS. There are two types of CRS. Geographic CRS (‘lon/lat’) has units in degrees of longitude and latitude, and projected CRS is typically in units of meters from a datum. There are also a few ways to represent CRSs in R, including PROJ strings, EPSG codes, and WKT representations. The CRSs of spatial objects can be set, compared, and transformed. The selection of an appropriate CRS is essential. Different algorithms are used when working with geographic or projected CRSs, such as when calculating distances, areas, or buffers. E.g., the sf package uses the s2 library for geographic CRSs (spherical geometry) and the GEOS library for projected CRSs (planar geometry). Moreover, various projected CRSs are available, each with different properties and distortions. The choice of CRS can also affect the appearance of maps. The subsequent sections go into more depth. They explore when reprojection is necessary and explain which CRS to use. Here, we also show how to reproject vector and raster data in R. The final section of the chapter shows how to modify and create custom map projections.",
       "topics": [
@@ -7237,39 +6864,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-8"
-    },
-    {
-      "id": "W3000595868",
-      "doi": "10.1201/9780203730058-9",
-      "openalexId": "W3000595868",
-      "title": "Bridges to GIS software",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "A defining feature of R is the way interact with it: type commands and hit Enter (or ctrl+Enter if writing code in the source editor in RStudio) to execute them interactively. This way of interacting with the computer is called a command-line interface (CLI). In dedicated geographic information systems (GIS) packages, by contrast, the emphasis tends to be on the graphical user interface (GUI). Another advantage of dedicated GISs is that they provide access to hundreds of ‘geoalgorithms’. QGIS is one of the most popular open-source GIS. Its main advantage lies in the fact that it provides a unified interface to several other open-source GIS. Though System for Automated Geoscientific Analyses (SAGA) is a hybrid GIS, its main focus has been on raster processing, and particularly on digital elevation models. Hence, SAGA is especially good at the fast processing of large (high-resolution) raster datasets.",
-      "topics": [
-        "Data Analysis with R",
-        "Geographic Information Systems Studies",
-        "Computational Physics and Python Applications"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-9"
     },
     {
       "id": "W4409802668",
@@ -7290,7 +6884,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter focuses on integrating R with geospatial software, and focuses on ‘bridges’ to three mature open source GIS products: QGIS (via the package qgisprocess, which can also be used to access algorithms in QGIS plugins), SAGA (via Rsagacmd) and GRASS (via rgrass). It provides guidance on selecting and using these bridges across hundreds of available geoalgorithms. The chapter also teaches how to access the GDAL library via system calls, how to interface with the powerful spatial database PostGIS, and how to access cloud-based geospatial services.",
       "topics": [
@@ -7791,39 +7385,6 @@
       "url": "http://eprints.whiterose.ac.uk/79171/"
     },
     {
-      "id": "W4238875940",
-      "doi": "10.1201/9780203730058-13",
-      "openalexId": "W4238875940",
-      "title": "Geomarketing",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "This chapter demonstrates how the skills learned can be applied to a particular domain: geomarketing (sometimes also referred to as location analysis or location intelligence). There are also many non-commercial applications that can use the technique for public benefit, for example where to locate new health services. People are fundamental to location analysis, in particular where they are likely to spend their time and other resources. Interestingly, ecological concepts and models are quite similar to those used for store location analysis. This is one of the great strengths of geocomputation and geographic information system in general. The chapter demonstrates how geocomputation can answer such questions based on a hypothetical case study based on real data. It also demonstrates how the techniques learned can be applied to undertake the following steps: tidy the input data from the German census, convert the tabulated census data into raster objects, identify metropolitan areas with high population densities, etc.",
-      "topics": [
-        "Spatial and Panel Data Analysis",
-        "Geographic Information Systems Studies",
-        "Human Mobility and Location-Based Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-13"
-    },
-    {
       "id": "W4409803450",
       "doi": "10.1201/9781003280569-17",
       "openalexId": "W4409803450",
@@ -7842,7 +7403,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter demonstrates how the skills learned in Parts I and II of the book can be applied to a particular domain: geomarketing (sometimes also referred to as location analysis or location intelligence). The chapter shows how to find locations most suitable for setting up a bicycle shop in German metropolitan areas, starting by downloading freely available geographic data (census and OpenStreetMap data). Census data on the population over geographical space (by age, gender, household size) and shop density is used to compute a score for locations which might be especially suitable for setting up a bike shop. Through the worked example, the chapter teaches how to use spatial data retrieval and tidying, spatial aggregation, and spatial visualization to solve a real-world problem.",
       "topics": [
@@ -7855,39 +7416,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-17"
-    },
-    {
-      "id": "W4239463783",
-      "doi": "10.1201/9780203730058-15",
-      "openalexId": "W4239463783",
-      "title": "Conclusion",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "Prerequisites Like the introduction, this concluding chapter contains few code chunks. But its prerequisites are demanding. It assumes that you have: Read through and attempted the exercises in all the chapters of Part I (Foundations). Grasped the diversity of methods that build on these foundations, by following the code and prose in Part II (Extensions). Considered how you can use geocomputation to solve real-world problems, at work and beyond, after engaging with Part III (Applications).",
-      "topics": [
-        "Computational Physics and Python Applications",
-        "Data Analysis with R",
-        "Spatial and Panel Data Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-15"
     },
     {
       "id": "W4409802835",
@@ -7908,7 +7436,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter summarizes the book, with reference to recurring themes, and to inspire future directions of application and development. It discusses the wide range of options for handling geographic data in R, with reference to the book's contents and other tools outside of the R ecosystem. Choice is a key feature of open source software; the section provides guidance on choosing between the various options. The chapter also describes gaps in the book's contents and explains why some areas of research were deliberately omitted while others were emphasized. This discussion leads to the question: having read this book, where next? Finally, we describe how geocomputation is part of a wider ‘open source approach’ that ensures methods are publicly accessible, reproducible and supported by collaborative communities, and how to get involved.",
       "topics": [
@@ -7921,39 +7449,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-19"
-    },
-    {
-      "id": "W4240366262",
-      "doi": "10.1201/9780203730058-12",
-      "openalexId": "W4240366262",
-      "title": "Transportation",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "Transport systems are dynamic systems adding additional complexity. The purpose of geographic transport modeling can be interpreted as simplifying this complexity in a way that captures the essence of transport problems. The map shows that the city center dominates transport patterns in the region, suggesting policies should be prioritized there, although a number of peripheral sub-centers can also be seen. Nodes in geographic transport data are zero-dimensional features among the predominantly one-dimensional features that comprise the network. Transport networks can be represented as graphs, in which each segment is connected to one or more other edges in the network. Transport systems operate at multiple interacting levels, meaning that geocomputational methods have great potential to generate insights into how they work. Transport is the fastest growing source of greenhouse gas emissions in many countries, and is set to become “the largest GHG emitting sector, especially in developed countries”.",
-      "topics": [
-        "Urban Transport and Accessibility",
-        "Transportation Planning and Optimization",
-        "Urban Design and Spatial Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-12"
     },
     {
       "id": "W4409802713",
@@ -7974,7 +7469,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter, the first of the third part of the book (Applications), introduces the geographic analysis of transport systems at different geographic levels, including: Areal units: transport patterns can be understood with reference to zonal aggregates such as the main mode of travel and average distance of trips made by people living in a particular zone. Desire lines: straight lines that represent ‘origin-destination’ data that records how many people travel between places in geographic space. Routes: these are lines representing a path along the route network along the desire lines defined in the previous bullet point. Nodes: these are points in the transport system that can represent common origins and destinations and public transport stations such as bus stops and rail stations. Route networks: these represent the system of roads, paths and other linear features in an area and are covered in section. They can be represented as geographic features or structured as an interconnected graph. Typically, models are designed to solve a particular problem. For this reason, this chapter is based around a policy scenario and open data that you will process with reference to reproducible code.",
       "topics": [
@@ -7987,39 +7482,6 @@
         "oaStatus": "closed"
       },
       "url": "https://doi.org/10.1201/9781003280569-16"
-    },
-    {
-      "id": "W4251684614",
-      "doi": "10.1201/9780203730058-14",
-      "openalexId": "W4251684614",
-      "title": "Ecology",
-      "year": 2019,
-      "publicationDate": "2019-03-22",
-      "type": "book-chapter",
-      "venue": "Chapman & Hall/CRC eBooks",
-      "journalId": "chapman-and-hall-crc-ebooks",
-      "authors": [
-        "Robin Lovelace",
-        "Jakub Nowosad",
-        "Jannes Muenchow"
-      ],
-      "authorPosition": "first",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": 0,
-      "abstract": "Prerequisites This chapter assumes you have a strong grasp of geographic data analysis and processing, covered in Chapters 2 to 5 . In it you will also make use of R’s interfaces to dedicated GIS software, and spatial cross-validation, topics covered in Chapters 9 and 11 , respectively. The chapter uses the following packages: library (sf) library (raster) library (RQGIS) library (mlr) library (dplyr) library (vegan)",
-      "topics": [
-        "Species Distribution and Climate Change",
-        "Data Analysis with R",
-        "Spatial and Panel Data Analysis"
-      ],
-      "openScienceStage": 0,
-      "openScience": {
-        "oaStatus": "closed"
-      },
-      "url": "https://doi.org/10.1201/9780203730058-14"
     },
     {
       "id": "W4409803432",
@@ -8040,7 +7502,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": 0,
       "abstract": "This chapter applies geographic statistical learning techniques to a case study of ecological modelling. It introduces geocomputation for ecological modelling and demonstrates how to use a range of techniques including random forest models. The chapter covers how to spatially tune hyperparameters to spatially predict the floristic composition of a Peruvian fog oasis, with reference to open data and reproducible code.",
       "topics": [
@@ -8115,7 +7577,7 @@
       "citations": 0,
       "citationsOpenAlex": 0,
       "citationsScholar": null,
-      "citationsByYear": [],
+      "citationsByYear": null,
       "fwci": null,
       "abstract": "The COVID-19 pandemic has dramatically impacted all of our lives in a very short period of time.Spring and summer are usually very busy as students prepare to go the field to engage in various data collection efforts.The pandemic has also disrupted these carefully planned activities as travel is suspended and local and remote field stations have closed indefinitely.A lost field season can be a major setback for a dissertation timeline and",
       "topics": [
@@ -8129,48 +7591,6 @@
         "oaUrl": "https://doi.org/10.59350/ywaqe-9h090"
       },
       "url": "https://doi.org/10.59350/ywaqe-9h090"
-    },
-    {
-      "id": "W4417074131",
-      "doi": "10.59350/g0c2s-64b41",
-      "openalexId": "W4417074131",
-      "title": "When Field or Lab Work is not an Option - Leveraging Open Data Resources for Remote Research",
-      "year": 2020,
-      "publicationDate": "2020-05-19",
-      "type": "other",
-      "venue": null,
-      "journalId": null,
-      "authors": [
-        "Anton Van de Putte",
-        "Ben Marwick",
-        "Ben Raymond",
-        "Brooke Anderson",
-        "Claudia Vitolo",
-        "Ilaria Prosdocimi",
-        "Louise J. Slater",
-        "Robin Lovelace",
-        "Sam J. Albers",
-        "Sam J. Albers",
-        "The rOpenSci Team"
-      ],
-      "authorPosition": "middle",
-      "citations": 0,
-      "citationsOpenAlex": 0,
-      "citationsScholar": null,
-      "citationsByYear": [],
-      "fwci": null,
-      "abstract": "The COVID-19 pandemic has dramatically impacted all of our lives in a very short period of time.Spring and summer are usually very busy as students prepare to go the field to engage in various data collection efforts.The pandemic has also disrupted these carefully planned activities as travel is suspended and local and remote field stations have closed indefinitely.A lost field season can be a major setback for a dissertation timeline and",
-      "topics": [
-        "Research Data Management Practices",
-        "Academic Publishing and Open Access",
-        "Education during COVID-19 pandemic"
-      ],
-      "openScienceStage": 1,
-      "openScience": {
-        "oaStatus": "gold",
-        "oaUrl": "https://doi.org/10.59350/g0c2s-64b41"
-      },
-      "url": "https://doi.org/10.59350/g0c2s-64b41"
     },
     {
       "id": "W4389899300",
@@ -10369,9 +9789,9 @@
       "reviewSpeedWeeks": null,
       "scopeTags": [],
       "homepageUrl": null,
-      "authorPublishedCount": 43,
+      "authorPublishedCount": 27,
       "authorCitationsTotal": 261,
-      "authorCitationsMean": 6.07,
+      "authorCitationsMean": 9.67,
       "targetPaperCount": 0,
       "metricSource": "openalex"
     },
@@ -12520,14 +11940,14 @@
     },
     {
       "year": 2019,
-      "publishedCount": 27,
+      "publishedCount": 11,
       "articlesCount": 5,
-      "booksAndChaptersCount": 16,
+      "booksAndChaptersCount": 0,
       "preprintsAndOtherCount": 6,
-      "oaCount": 10,
-      "stage4PlusCount": 3,
+      "oaCount": 9,
+      "stage4PlusCount": 2,
       "citationsEarnedInYear": 132,
-      "citationsOfCohort": 330,
+      "citationsOfCohort": 190,
       "plannedSubmissionsCount": 0,
       "plannedPublicationsCount": 0,
       "plannedPaperSlugs": [],
@@ -12535,11 +11955,11 @@
     },
     {
       "year": 2020,
-      "publishedCount": 21,
+      "publishedCount": 20,
       "articlesCount": 6,
       "booksAndChaptersCount": 2,
-      "preprintsAndOtherCount": 13,
-      "oaCount": 16,
+      "preprintsAndOtherCount": 12,
+      "oaCount": 15,
       "stage4PlusCount": 0,
       "citationsEarnedInYear": 182,
       "citationsOfCohort": 197,
@@ -12615,9 +12035,9 @@
       "booksAndChaptersCount": 17,
       "preprintsAndOtherCount": 3,
       "oaCount": 9,
-      "stage4PlusCount": 2,
+      "stage4PlusCount": 3,
       "citationsEarnedInYear": 392,
-      "citationsOfCohort": 25,
+      "citationsOfCohort": 165,
       "plannedSubmissionsCount": 0,
       "plannedPublicationsCount": 0,
       "plannedPaperSlugs": [],

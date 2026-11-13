@@ -43,11 +43,7 @@
 
   const roadmap = $derived(store.roadmapYearRange);
 
-  const scholarI10 = $derived.by(() => {
-    const extra = metrics as Record<string, unknown>;
-    const value = extra.i10IndexScholar;
-    return typeof value === 'number' ? value : null;
-  });
+  const scholarI10 = $derived(metrics.i10IndexScholar ?? null);
 
   const topCited = $derived.by(() => {
     const pubs = [...(store.snapshot?.publications ?? [])];
@@ -146,21 +142,15 @@
         </div>
         <div class="mt-2 flex items-baseline gap-2">
           <span class="text-3xl font-bold tracking-tight">
-            {(store.citationMode === 'scholar' && metrics.citedByScholar
-              ? metrics.citedByScholar
-              : store.citationMode === 'openalex'
-                ? metrics.citedByCount
-                : Math.max(
-                    metrics.citedByCount,
-                    metrics.citedByScholar ?? 0,
-                    store.liveSummaryStats.totalCitationsComputed
-                  )
+            {(store.citationMode === 'scholar'
+              ? (metrics.citedByScholar ?? store.liveSummaryStats.totalCitationsComputed)
+              : metrics.citedByCount
             ).toLocaleString()}
           </span>
         </div>
         <p class="mt-1 text-xs text-[var(--ink-muted)]">
           OpenAlex: {metrics.citedByCount.toLocaleString()}
-          {#if metrics.citedByScholar}
+          {#if metrics.citedByScholar != null}
             · Scholar: {metrics.citedByScholar.toLocaleString()}+
           {/if}
         </p>
@@ -174,35 +164,23 @@
         <div class="mt-2 flex items-baseline gap-3">
           <div>
             <span class="text-3xl font-bold tracking-tight">
-              {store.citationMode === 'scholar' && metrics.hIndexScholar
-                ? metrics.hIndexScholar
-                : store.citationMode === 'best'
-                  ? Math.max(
-                      store.liveSummaryStats.hIndexComputed,
-                      metrics.hIndexScholar ?? 0,
-                      metrics.hIndex
-                    )
-                  : metrics.hIndex}
+              {store.citationMode === 'scholar'
+                ? (metrics.hIndexScholar ?? store.liveSummaryStats.hIndexComputed)
+                : metrics.hIndex}
             </span>
             <span class="ml-0.5 text-xs font-medium text-[var(--ink-muted)]">h-index</span>
           </div>
           <div class="border-l border-[var(--border-subtle)] pl-3">
             <span class="text-2xl font-bold tracking-tight">
-              {store.citationMode === 'scholar' && scholarI10 !== null
-                ? scholarI10
-                : store.citationMode === 'best'
-                  ? Math.max(
-                      store.liveSummaryStats.i10IndexComputed,
-                      scholarI10 ?? 0,
-                      metrics.i10Index
-                    )
-                  : metrics.i10Index}
+              {store.citationMode === 'scholar'
+                ? (scholarI10 ?? store.liveSummaryStats.i10IndexComputed)
+                : metrics.i10Index}
             </span>
             <span class="ml-0.5 text-xs font-medium text-[var(--ink-muted)]">i10</span>
           </div>
         </div>
         <p class="mt-1 text-xs text-[var(--ink-muted)]">
-          {#if metrics.hIndexScholar}
+          {#if metrics.hIndexScholar != null}
             OpenAlex h={metrics.hIndex} · Scholar h={metrics.hIndexScholar}
           {:else if metrics.twoYearMeanCitedness}
             2yr mean citedness: {metrics.twoYearMeanCitedness.toFixed(2)}

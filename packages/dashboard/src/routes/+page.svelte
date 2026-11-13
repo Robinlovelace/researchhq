@@ -114,6 +114,12 @@
       store.selectedPlannedPaper =
         store.allPlannedPapers.find((p) => p.slug === paper) ?? null;
     }
+    const citations = params.get('citations');
+    if (citations === 'scholar' && store.hasScholarData) {
+      store.citationMode = 'scholar';
+    } else if (citations === 'openalex' || citations === null) {
+      store.citationMode = 'openalex';
+    }
   }
 
   $effect(() => {
@@ -149,6 +155,11 @@
     }
     if (demoMode) url.searchParams.set('demo', '1');
     else url.searchParams.delete('demo');
+    if (store.citationMode === 'scholar' && store.hasScholarData) {
+      url.searchParams.set('citations', 'scholar');
+    } else {
+      url.searchParams.delete('citations');
+    }
     const qs = url.searchParams.toString();
     const current = window.location.search.replace(/^\?/, '');
     if (qs !== current) {
@@ -268,9 +279,8 @@
               bind:value={store.citationMode}
               class="min-h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-subtle)] px-2.5 py-1 text-xs font-semibold text-[var(--ink-primary)]"
             >
-              <option value="best">Max (OpenAlex + Scholar)</option>
-              <option value="openalex">OpenAlex Only</option>
-              <option value="scholar">Google Scholar Preferred</option>
+              <option value="openalex">OpenAlex</option>
+              <option value="scholar" disabled={!store.hasScholarData}>Google Scholar</option>
             </select>
           </div>
 

@@ -13,12 +13,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 
 import {
+  bookEditionTitleKey,
+  dedupeEditions,
   dedupeKey,
   firstAuthorSurname,
   initInstance,
   matchesCanonicalJournal,
   parseOrcid,
   resolveOpenAlexApiKey,
+  stripEditionMarkers,
   syncPortfolio,
   validateInstance,
   type OfflineBundle,
@@ -434,5 +437,399 @@ describe('validateInstance hardening', () => {
   it('passes on the untouched sanitized export', async () => {
     await syncPortfolio(instanceDir, { offlineBundle: buildBundle(), log: () => {} });
     expect(validateInstance(instanceDir).ok).toBe(true);
+  });
+});
+
+describe('multi-edition book, chapter, and mirror deduplication', () => {
+  const BOOK_SOURCE = sourceFixture({
+    id: 'https://openalex.org/S4306463019',
+    display_name: 'Chapman & Hall/CRC eBooks',
+    type: 'ebook platform',
+  });
+
+  it('strips explicit edition suffixes while preserving volume and part identifiers', () => {
+    expect(stripEditionMarkers('Spatial Microsimulation with R (2nd ed.)')).toBe(
+      'Spatial Microsimulation with R',
+    );
+    expect(stripEditionMarkers('Spatial Microsimulation with R, First Edition')).toBe(
+      'Spatial Microsimulation with R',
+    );
+    expect(bookEditionTitleKey('Spatial Microsimulation with R (2nd ed.)')).toBe(
+      bookEditionTitleKey('Spatial Microsimulation with R, First Edition'),
+    );
+    expect(bookEditionTitleKey('Geocomputation with R: Revised edition')).toBe(
+      bookEditionTitleKey('Geocomputation with R, 2e'),
+    );
+    // Multi-volume and multi-part works must remain distinct keys.
+    expect(bookEditionTitleKey('Handbook of Transport, Volume 1')).not.toBe(
+      bookEditionTitleKey('Handbook of Transport, Volume 2'),
+    );
+    expect(bookEditionTitleKey('Handbook of Transport, Vol. 1 (2nd ed.)')).not.toBe(
+      bookEditionTitleKey('Handbook of Transport, Vol. 2 (2nd ed.)'),
+    );
+    expect(bookEditionTitleKey('Transport Systems, Part I')).not.toBe(
+      bookEditionTitleKey('Transport Systems, Part II'),
+    );
+  });
+
+  it('collapses identical-title multi-edition books to latest year, sums distinct-DOI OpenAlex citations, takes max Scholar, and inherits Stage 4 + openScience URLs + featured', async () => {
+    const scholarCsv = join(instanceDir, 'scholar.csv');
+    writeFileSync(scholarCsv, 'title,citations_numeric\n"Geocomputation with R",204\n', 'utf8');
+
+    const overridesPath = join(instanceDir, 'data', 'overrides.yaml');
+    writeFileSync(
+      overridesPath,
+      `overrides:
+  geocomputation-with-r:
+    doi: 10.1201/9780203730058
+    featured: true
+    openScienceStage: 4
+    openScience:
+      oaUrl: https://r.geocompx.org/
+      dataUrl: https://github.com/Nowosad/spData
+      codeUrl: https://github.com/geocompx/geocompr
+      reproducibleRepoUrl: https://github.com/geocompx/geocompr
+      interactiveToolUrl: https://r.geocompx.org/
+`,
+      'utf8',
+    );
+
+    const bundle: OfflineBundle = {
+      author: MOCK_AUTHOR,
+      works: [
+        workFixture({
+          id: 'https://openalex.org/W2959847940',
+          display_name: 'Geocomputation with R',
+          type: 'book',
+          publication_year: 2019,
+          publication_date: '2019-03-22',
+          doi: 'https://doi.org/10.1201/9780203730058',
+          cited_by_count: 131,
+          fwci: 6.15,
+          counts_by_year: [
+            { year: 2026, cited_by_count: 13 },
+            { year: 2025, cited_by_count: 14 },
+            { year: 2019, cited_by_count: 104 },
+          ],
+          abstract_inverted_index: { Geocomputation: [0], first: [1], edition: [2] },
+          open_access: { is_oa: true, oa_status: 'green', oa_url: 'https://r.geocompx.org/' },
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://r.geocompx.org/' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://r.geocompx.org/' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A3', display_name: 'Jannes Muenchow' } },
+          ],
+        }),
+        workFixture({
+          id: 'https://openalex.org/W4409802704',
+          display_name: 'Geocomputation with R',
+          type: 'book',
+          publication_year: 2025,
+          publication_date: '2025-04-25',
+          doi: 'https://doi.org/10.1201/9781003280569',
+          cited_by_count: 13,
+          fwci: null,
+          counts_by_year: [
+            { year: 2026, cited_by_count: 6 },
+            { year: 2025, cited_by_count: 7 },
+          ],
+          abstract_inverted_index: null,
+          open_access: {
+            is_oa: true,
+            oa_status: 'hybrid',
+            oa_url: 'https://api.taylorfrancis.com/content/books/mono/download?identifierValue=10.1201/9781003280569',
+          },
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9781003280569' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9781003280569' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A3', display_name: 'Jannes Muenchow' } },
+          ],
+        }),
+      ],
+      sources: { S4306463019: BOOK_SOURCE },
+      journals: {},
+    };
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = await syncPortfolio(instanceDir, {
+      offlineBundle: bundle,
+      scholarCsvPath: scholarCsv,
+      log: () => {},
+    });
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    const books = result.publications.filter((p) => p.type === 'book');
+    expect(books).toHaveLength(1);
+    const geocompr = books[0]!;
+    expect(geocompr.year).toBe(2025);
+    expect(geocompr.doi).toBe('10.1201/9781003280569');
+    expect(geocompr.citations).toBe(144);
+    expect(geocompr.citationsOpenAlex).toBe(144);
+    expect(geocompr.citationsScholar).toBe(204);
+    expect(geocompr.openScienceStage).toBe(4);
+    expect(geocompr.featured).toBe(true);
+    expect(geocompr.openScience.oaUrl).toBe('https://r.geocompx.org/');
+    expect(geocompr.openScience.dataUrl).toBe('https://github.com/Nowosad/spData');
+    expect(geocompr.openScience.codeUrl).toBe('https://github.com/geocompx/geocompr');
+    expect(geocompr.openScience.reproducibleRepoUrl).toBe('https://github.com/geocompx/geocompr');
+    expect(geocompr.openScience.interactiveToolUrl).toBe('https://r.geocompx.org/');
+    expect(geocompr.abstract).toBe('Geocomputation first edition');
+    expect(geocompr.fwci).toBe(6.15);
+    expect(geocompr.citationsByYear).toEqual([
+      { year: 2019, citedByCount: 104 },
+      { year: 2025, citedByCount: 21 },
+      { year: 2026, citedByCount: 19 },
+    ]);
+    expect(result.snapshot.author.metrics.citedByCount).toBe(144);
+  });
+
+  it('merges suffixed book editions, never merges multi-volume books, and guards against summing identical DOIs', () => {
+    const basePub = {
+      id: 'W1',
+      doi: '10.1201/ed1',
+      openalexId: 'W1',
+      title: 'Spatial Microsimulation with R, First Edition',
+      year: 2016,
+      publicationDate: '2016-01-01',
+      type: 'book' as const,
+      venue: 'CRC Press',
+      journalId: 'crc-press',
+      authors: ['Robin Lovelace', 'Morgane Dumont'],
+      authorPosition: 'first' as const,
+      citations: 105,
+      citationsOpenAlex: 105,
+      citationsScholar: 133,
+      citationsByYear: [{ year: 2016, citedByCount: 105 }],
+      fwci: 2.5,
+      abstract: 'First edition abstract',
+      topics: ['Microsimulation'],
+      openScienceStage: 4,
+      openScience: {
+        oaStatus: 'green' as const,
+        oaUrl: 'https://spatial-microsim-book.robinlovelace.net',
+        codeUrl: 'https://github.com/Robinlovelace/spatial-microsim-book',
+      },
+      url: 'https://spatial-microsim-book.robinlovelace.net',
+      featured: true,
+    };
+
+    const ed2 = {
+      ...basePub,
+      id: 'W2',
+      openalexId: 'W2',
+      doi: '10.1201/ed2',
+      title: 'Spatial Microsimulation with R (2nd ed.)',
+      year: 2024,
+      publicationDate: '2024-06-01',
+      citations: 15,
+      citationsOpenAlex: 15,
+      citationsScholar: null,
+      citationsByYear: [{ year: 2024, citedByCount: 15 }],
+      fwci: null,
+      abstract: null,
+      openScienceStage: 1,
+      openScience: { oaStatus: 'gold' as const },
+      featured: undefined,
+    };
+
+    // Duplicate OpenAlex work sharing the exact same DOI as ed2 must NOT double-count 15 + 15.
+    const ed2SameDoiDup = {
+      ...ed2,
+      id: 'W2dup',
+      openalexId: 'W2dup',
+      citations: 15,
+      citationsOpenAlex: 15,
+    };
+
+    const vol1 = {
+      ...basePub,
+      id: 'Wvol1',
+      openalexId: 'Wvol1',
+      doi: '10.1000/handbook-v1',
+      title: 'Handbook of Transport, Volume 1',
+      year: 2021,
+      citations: 20,
+      citationsOpenAlex: 20,
+    };
+
+    const vol2 = {
+      ...basePub,
+      id: 'Wvol2',
+      openalexId: 'Wvol2',
+      doi: '10.1000/handbook-v2',
+      title: 'Handbook of Transport, Volume 2',
+      year: 2023,
+      citations: 12,
+      citationsOpenAlex: 12,
+    };
+
+    const deduped = dedupeEditions([basePub, ed2, ed2SameDoiDup, vol1, vol2]);
+    expect(deduped).toHaveLength(3);
+
+    const smr = deduped.find((p) => p.title.startsWith('Spatial Microsimulation'))!;
+    expect(smr.year).toBe(2024);
+    expect(smr.title).toBe('Spatial Microsimulation with R (2nd ed.)');
+    expect(smr.doi).toBe('10.1201/ed2');
+    expect(smr.citationsOpenAlex).toBe(120);
+    expect(smr.citationsScholar).toBe(133);
+    expect(smr.openScienceStage).toBe(4);
+    expect(smr.featured).toBe(true);
+    expect(smr.openScience.codeUrl).toBe('https://github.com/Robinlovelace/spatial-microsim-book');
+
+    expect(deduped.filter((p) => p.title.startsWith('Handbook of Transport'))).toHaveLength(2);
+  });
+
+  it('merges multi-edition chapters of the same parent book while keeping chapters from different books separate', async () => {
+    const bundle: OfflineBundle = {
+      author: MOCK_AUTHOR,
+      works: [
+        // Geocomputation with R (1st ed. 2019 + 2nd ed. 2025)
+        workFixture({
+          id: 'https://openalex.org/W_GEOCOMPR_2019',
+          display_name: 'Geocomputation with R',
+          type: 'book',
+          publication_year: 2019,
+          doi: '10.1201/9780203730058',
+          cited_by_count: 131,
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://r.geocompx.org/' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://r.geocompx.org/' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A3', display_name: 'Jannes Muenchow' } },
+          ],
+        }),
+        workFixture({
+          id: 'https://openalex.org/W_GEOCOMPR_2025',
+          display_name: 'Geocomputation with R',
+          type: 'book',
+          publication_year: 2025,
+          doi: '10.1201/9781003280569',
+          cited_by_count: 13,
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://r.geocompx.org/' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://r.geocompx.org/' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A3', display_name: 'Jannes Muenchow' } },
+          ],
+        }),
+        // Geocomputation with Python (2024) - distinct book sharing 2 co-authors
+        workFixture({
+          id: 'https://openalex.org/W_GEOCOMPY_2024',
+          display_name: 'Geocomputation with Python',
+          type: 'book',
+          publication_year: 2024,
+          doi: '10.1201/9781003379911',
+          cited_by_count: 3,
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://py.geocompx.org/' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://py.geocompx.org/' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A4', display_name: 'Michael Dorman' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A5', display_name: 'Anita Graser' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+          ],
+        }),
+        // Same-book chapter across two editions of Geocomputation with R (renumbered -5 -> -6)
+        workFixture({
+          id: 'https://openalex.org/W_CH_R_2019',
+          display_name: 'Geometry operations',
+          type: 'book-chapter',
+          publication_year: 2019,
+          doi: '10.1201/9780203730058-5',
+          cited_by_count: 4,
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9780203730058-5' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9780203730058-5' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A3', display_name: 'Jannes Muenchow' } },
+          ],
+        }),
+        workFixture({
+          id: 'https://openalex.org/W_CH_R_2025',
+          display_name: 'Geometry operations',
+          type: 'book-chapter',
+          publication_year: 2025,
+          doi: '10.1201/9781003280569-6',
+          cited_by_count: 2,
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9781003280569-6' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9781003280569-6' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A3', display_name: 'Jannes Muenchow' } },
+          ],
+        }),
+        // Same-title chapter in Geocomputation with Python - MUST stay separate
+        workFixture({
+          id: 'https://openalex.org/W_CH_PY_2024',
+          display_name: 'Geometry operations',
+          type: 'book-chapter',
+          publication_year: 2024,
+          doi: '10.1201/9781003379911-4',
+          cited_by_count: 1,
+          primary_location: { source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9781003379911-4' },
+          locations: [{ source: BOOK_SOURCE, landing_page_url: 'https://doi.org/10.1201/9781003379911-4' }],
+          authorships: [
+            { author_position: 'first', author: { id: 'https://openalex.org/A4', display_name: 'Michael Dorman' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A5', display_name: 'Anita Graser' } },
+            { author_position: 'middle', author: { id: 'https://openalex.org/A2', display_name: 'Jakub Nowosad' } },
+            { author_position: 'last', author: { id: 'https://openalex.org/A9999999999', display_name: 'Robin Lovelace' } },
+          ],
+        }),
+        // Same-year Rogue Scholar blog mirror records (`type === 'other'`) collapse to 1
+        workFixture({
+          id: 'https://openalex.org/W_BLOG_1',
+          display_name: 'When Field or Lab Work is not an Option - Leveraging Open Data Resources for Remote Research',
+          type: 'dataset',
+          publication_year: 2020,
+          doi: '10.59350/ywaqe-9h090',
+          cited_by_count: 0,
+        }),
+        workFixture({
+          id: 'https://openalex.org/W_BLOG_2',
+          display_name: 'When Field or Lab Work is not an Option - Leveraging Open Data Resources for Remote Research',
+          type: 'dataset',
+          publication_year: 2020,
+          doi: '10.59350/g0c2s-64b41',
+          cited_by_count: 0,
+        }),
+      ],
+      sources: { S4306463019: BOOK_SOURCE, S183347913: JOURNAL_SOURCE },
+      journals: {},
+    };
+
+    const result = await syncPortfolio(instanceDir, {
+      offlineBundle: bundle,
+      log: () => {},
+    });
+
+    const books = result.publications.filter((p) => p.type === 'book');
+    expect(books).toHaveLength(2);
+    expect(books.map((b) => b.title).sort()).toEqual([
+      'Geocomputation with Python',
+      'Geocomputation with R',
+    ]);
+
+    const chapters = result.publications.filter((p) => p.type === 'book-chapter');
+    expect(chapters).toHaveLength(2);
+    const rChapter = chapters.find((c) => c.doi === '10.1201/9781003280569-6')!;
+    const pyChapter = chapters.find((c) => c.doi === '10.1201/9781003379911-4')!;
+    expect(rChapter).toBeDefined();
+    expect(rChapter.year).toBe(2025);
+    expect(rChapter.citationsOpenAlex).toBe(6);
+    expect(pyChapter).toBeDefined();
+    expect(pyChapter.year).toBe(2024);
+    expect(pyChapter.citationsOpenAlex).toBe(1);
+
+    const blogPosts = result.publications.filter((p) =>
+      p.title.startsWith('When Field or Lab Work'),
+    );
+    expect(blogPosts).toHaveLength(1);
   });
 });

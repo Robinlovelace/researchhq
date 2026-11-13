@@ -11,8 +11,15 @@ import {
 } from '@researchhq/schema';
 
 export type DashboardTab = 'overview' | 'timeseries' | 'journals' | 'publications' | 'pipeline';
-export type CitationSourceMode = 'best' | 'openalex' | 'scholar';
+export type CitationSourceMode = 'openalex' | 'scholar';
 export type PubTypeFilter = 'all' | 'article' | 'book' | 'software' | 'other';
+
+/** True when the snapshot carries any Google Scholar citation metrics. */
+export function snapshotHasScholarData(snapshot: PortfolioSnapshot | null): boolean {
+  if (!snapshot) return false;
+  if (snapshot.author.metrics.citedByScholar != null) return true;
+  return snapshot.publications.some((p) => p.citationsScholar != null);
+}
 
 const STORAGE_IDEAS_PREFIX = 'researchhq-local-ideas-v2';
 const STORAGE_PROGRESS_PREFIX = 'researchhq-paper-progress-v2';
@@ -44,7 +51,8 @@ export function compareStrings(a: string, b: string): number {
 export class PortfolioStore {
   snapshot = $state<PortfolioSnapshot | null>(null);
   activeTab = $state<DashboardTab>('overview');
-  citationMode = $state<CitationSourceMode>('best');
+  citationMode = $state<CitationSourceMode>('openalex');
+  hasScholarData = $derived(snapshotHasScholarData(this.snapshot));
 
   // Publication Explorer filters
   searchQuery = $state<string>('');
@@ -98,6 +106,9 @@ export class PortfolioStore {
    */
   setSnapshot(snapshot: PortfolioSnapshot): void {
     this.snapshot = snapshot;
+    if (this.citationMode === 'scholar' && !snapshotHasScholarData(snapshot)) {
+      this.citationMode = 'openalex';
+    }
     const ns = storageNamespace(snapshot);
     if (typeof window !== 'undefined' && ns !== this.loadedNamespace) {
       this.hydrateLocalDrafts();
@@ -348,13 +359,10 @@ export class PortfolioStore {
   }
 
   getCitations(pub: Publication): number {
-    if (this.citationMode === 'openalex') {
-      return pub.citationsOpenAlex ?? pub.citations;
-    }
     if (this.citationMode === 'scholar') {
-      return pub.citationsScholar ?? pub.citations;
+      return pub.citationsScholar ?? 0;
     }
-    return Math.max(pub.citations, pub.citationsOpenAlex ?? 0, pub.citationsScholar ?? 0);
+    return pub.citationsOpenAlex ?? pub.citations;
   }
 
   allPlannedPapers = $derived.by<PlannedPaper[]>(() => {

@@ -90,6 +90,8 @@ export type CuratedJournal = z.infer<typeof CuratedJournalSchema>;
 
 export const OverrideEntrySchema = z.object({
   doi: z.string().nullish(),
+  /** Optional list of edition/version DOIs belonging to the same work. */
+  dois: z.array(z.string()).nullish(),
   titleMatch: z.string().nullish(),
   featured: z.boolean().nullish(),
   openScienceStage: z.number().int().min(0).max(5).nullish(),
@@ -694,7 +696,8 @@ function processWork(
   const openScience = buildOpenScienceEvidence(work);
 
   const scholarCitations =
-    context.scholarByTitleKey.get(normalizeTitleKey(title)) ?? null;
+    context.scholarByTitleKey.get(normalizeTitleKey(title)) ??
+    (mappedType === 'book' ? (context.scholarByTitleKey.get(bookEditionTitleKey(title)) ?? null) : null);
 
   const publication: Publication = {
     id: sourceShortId(work.id) ?? `doi-${slugifyVenue(title)}`,
@@ -734,7 +737,7 @@ function processWork(
 }
 
 // ---------------------------------------------------------------------------
-// Preprint de-duplication
+// Preprint, CRAN version, and multi-edition book de-duplication
 // ---------------------------------------------------------------------------
 
 /** Surname of the first author ('Robin Lovelace' or 'Lovelace, Robin'). */
@@ -744,6 +747,68 @@ export function firstAuthorSurname(publication: Publication): string {
   const trimmed = first.trim();
   const raw = trimmed.includes(',') ? trimmed.split(',')[0] : trimmed.split(/\s+/).pop();
   return (raw ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+/** Normalized surnames for all listed authors on a publication. */
+export function authorSurnames(publication: Publication): string[] {
+  const out: string[] = [];
+  for (const rawAuthor of publication.authors) {
+    const trimmed = rawAuthor.trim();
+    if (!trimmed) continue;
+    const raw = trimmed.includes(',') ? trimmed.split(',')[0] : trimmed.split(/\s+/).pop();
+    const norm = (raw ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (norm) out.push(norm);
+  }
+  return out;
+}
+
+/**
+ * True when two works have overlapping authorship: either the same non-empty
+ * first-author surname or at least 50% shared author surnames (overlap
+ * coefficient relative to the smaller author list).
+ */
+export function authorsOverlap(a: Publication, b: Publication): boolean {
+  const fa = firstAuthorSurname(a);
+  const fb = firstAuthorSurname(b);
+  if (fa !== '' && fa === fb) return true;
+  const setA = new Set(authorSurnames(a));
+  const setB = new Set(authorSurnames(b));
+  if (setA.size === 0 || setB.size === 0) return false;
+  let shared = 0;
+  for (const surname of setA) {
+    if (setB.has(surname)) shared += 1;
+  }
+  return shared / Math.min(setA.size, setB.size) >= 0.5;
+}
+
+/**
+ * Strip explicit book/chapter edition markers (for example '(2nd ed.)',
+ * ', First Edition', 'Revised and expanded edition', ', 2e') while preserving
+ * volume and part identifiers ('Volume 1', 'Vol. 2', 'Part II') so
+ * multi-volume works never collapse into a single edition family.
+ */
+export function stripEditionMarkers(title: string): string {
+  let cleaned = title.replace(R_PACKAGE_SUFFIX_PATTERN, '');
+  // Parenthesized or bracketed edition markers: '(2nd ed.)', '[Revised edition]', '(2e)'.
+  cleaned = cleaned.replace(
+    /\s*[\(\[]\s*(?:(?:revised(?:\s+(?:and|&)\s+(?:expanded|updated|enlarged))?|expanded|updated|enlarged)\s+)?(?:(?:1st|2nd|3rd|[4-9]th|\d{2,}th|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\s+(?:edition|ed\.?)|(?:revised(?:\s+(?:and|&)\s+(?:expanded|updated|enlarged))?|expanded|updated|enlarged|new)\s+edition|[1-9]\d?e)\s*[\)\]]/gi,
+    '',
+  );
+  // Trailing or clause-separated ordinal / named edition markers: ', First Edition', ': 2nd ed.'.
+  cleaned = cleaned.replace(
+    /(?:[,;:\-/]\s*|\s+)(?:(?:revised(?:\s+(?:and|&)\s+(?:expanded|updated|enlarged))?|expanded|updated|enlarged)\s+)?(?:(?:1st|2nd|3rd|[4-9]th|\d{2,}th|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\s+(?:edition\b|ed\.?(?=\s*$|[)\].,;:\-]))|(?:revised(?:\s+(?:and|&)\s+(?:expanded|updated|enlarged))?|expanded|updated|enlarged)\s+edition\b)/gi,
+    '',
+  );
+  // Trailing shorthand edition marker like ', 2e' or ': 3e'.
+  cleaned = cleaned.replace(/(?:[,;:\-]\s*)\b([1-9]\d?)e\b\s*$/i, '');
+  return cleaned.replace(/[,;:\-\s]+$/, '').trim();
+}
+
+/** Normalized book/chapter edition-family title key with edition markers stripped. */
+export function bookEditionTitleKey(title: string): string {
+  const stripped = stripEditionMarkers(title);
+  const key = normalizeTitleKey(stripped);
+  return key !== '' ? key : stripped.toLowerCase();
 }
 
 /**
@@ -762,9 +827,9 @@ export function dedupeKey(publication: Publication): string {
 
 /**
  * Merge preprints (and CRAN version records) into a single keeper sharing the
- * same dedupe key. The published article (or, failing that, the
- * highest-cited record) wins; the input objects are never mutated and
- * citationsByYear are merged across duplicates taking the max count per year.
+ * same dedupe key. Books and book chapters are left untouched here so
+ * `dedupeEditions` can select the latest edition and sum distinct-DOI OpenAlex
+ * citations cleanly.
  */
 export function dedupePreprints(publications: Publication[]): Publication[] {
   const byKey = new Map<string, Publication[]>();
@@ -781,7 +846,14 @@ export function dedupePreprints(publications: Publication[]): Publication[] {
       result.push(list[0]);
       continue;
     }
-    const strippedTitleKey = normalizeTitleKey(list[0].title.replace(R_PACKAGE_SUFFIX_PATTERN, ''));
+    const allBooks = list.every((p) => p.type === 'book');
+    const allChapters = list.every((p) => p.type === 'book-chapter');
+    if (allBooks || allChapters) {
+      for (const item of list) {
+        result.push(item);
+      }
+      continue;
+    }
     const hasPreprintOrPkg = list.some(
       (p) =>
         p.type === 'preprint' ||
@@ -790,14 +862,10 @@ export function dedupePreprints(publications: Publication[]): Publication[] {
     );
     const years = list.map((p) => p.year);
     const yearSpan = Math.max(...years) - Math.min(...years);
-    const allChapters = list.every((p) => p.type === 'book-chapter');
     const distinctDois = new Set(list.map((p) => p.doi).filter(Boolean));
     // Guard against merging distinct works (different DOIs without preprint/CRAN version marker,
-    // >2 year span without preprint/CRAN version marker, or generic short chapter titles).
-    if (
-      (!hasPreprintOrPkg && (yearSpan > 2 || distinctDois.size > 1)) ||
-      (allChapters && strippedTitleKey.length <= 15 && (yearSpan > 0 || distinctDois.size > 1))
-    ) {
+    // or >2 year span without preprint/CRAN version marker).
+    if (!hasPreprintOrPkg && (yearSpan > 2 || distinctDois.size > 1)) {
       for (const item of list) {
         result.push(item);
       }
@@ -842,6 +910,357 @@ export function dedupePreprints(publications: Publication[]): Publication[] {
   return result;
 }
 
+const OPEN_SCIENCE_TEXT_FIELDS = [
+  'oaUrl',
+  'dataUrl',
+  'codeUrl',
+  'reproducibleRepoUrl',
+  'interactiveToolUrl',
+  'interactiveToolName',
+  'rationale',
+] as const;
+
+const OPEN_OA_STATUSES = new Set(['gold', 'diamond', 'green', 'hybrid', 'bronze']);
+
+interface EditionDedupeOptions {
+  overriddenStagePubs?: ReadonlySet<Publication>;
+  curatedOpenScienceFields?: ReadonlyMap<Publication, ReadonlySet<string>>;
+}
+
+function partitionOverlappingAuthorClusters(items: Publication[]): Publication[][] {
+  const clusters: Publication[][] = [];
+  for (const item of items) {
+    const matchingIndices: number[] = [];
+    for (let i = 0; i < clusters.length; i++) {
+      if (clusters[i]!.some((member) => authorsOverlap(member, item))) {
+        matchingIndices.push(i);
+      }
+    }
+    if (matchingIndices.length === 0) {
+      clusters.push([item]);
+    } else {
+      const primaryIdx = matchingIndices[0]!;
+      clusters[primaryIdx]!.push(item);
+      for (let j = matchingIndices.length - 1; j >= 1; j--) {
+        const mergeIdx = matchingIndices[j]!;
+        clusters[primaryIdx]!.push(...clusters[mergeIdx]!);
+        clusters.splice(mergeIdx, 1);
+      }
+    }
+  }
+  return clusters;
+}
+
+function extractParentBookDoi(
+  chapterDoi: string | null | undefined,
+  sortedKnownBookDois: readonly string[],
+): string | null {
+  const norm = normalizeDoi(chapterDoi);
+  if (!norm) return null;
+  for (const bookDoi of sortedKnownBookDois) {
+    if (norm.length > bookDoi.length && norm.startsWith(bookDoi)) {
+      const sep = norm[bookDoi.length];
+      if (sep === '-' || sep === '.' || sep === '_' || sep === '/') {
+        return bookDoi;
+      }
+    }
+  }
+  const suffixMatch = /^(.+?)(?:-\d+|\.(?:n?\d+)|_\d+)$/i.exec(norm);
+  return suffixMatch?.[1] ?? null;
+}
+
+function mergeEditionCluster(
+  group: Publication[],
+  citationStrategy: 'sum-distinct-doi' | 'max',
+  options: EditionDedupeOptions = {},
+): Publication {
+  const sortedDesc = group.slice().sort(
+    (a, b) =>
+      b.year - a.year ||
+      (b.publicationDate ?? '').localeCompare(a.publicationDate ?? '') ||
+      (b.doi ? 1 : 0) - (a.doi ? 1 : 0) ||
+      b.citations - a.citations,
+  );
+  const winner = sortedDesc[0]!;
+  const keeper = structuredClone(winner);
+
+  // OpenAlex citations: sum across distinct edition DOIs for books/chapters
+  // (taking max within any identical-DOI bucket so duplicate records of the
+  // same DOI are never double-counted); take max for mirror records.
+  const doiBuckets = new Map<string, Publication[]>();
+  const nullDoiPubs: Publication[] = [];
+  for (const pub of group) {
+    const normDoi = normalizeDoi(pub.doi);
+    if (normDoi) {
+      const bucket = doiBuckets.get(normDoi) ?? [];
+      bucket.push(pub);
+      doiBuckets.set(normDoi, bucket);
+    } else {
+      nullDoiPubs.push(pub);
+    }
+  }
+
+  if (citationStrategy === 'sum-distinct-doi' && doiBuckets.size > 1) {
+    let summedOpenAlex = 0;
+    const summedByYear = new Map<number, number>();
+    for (const bucket of doiBuckets.values()) {
+      const bucketMax = Math.max(...bucket.map((p) => p.citationsOpenAlex ?? p.citations));
+      summedOpenAlex += bucketMax;
+      const bucketByYear = new Map<number, number>();
+      for (const pub of bucket) {
+        for (const entry of pub.citationsByYear ?? []) {
+          bucketByYear.set(
+            entry.year,
+            Math.max(bucketByYear.get(entry.year) ?? 0, entry.citedByCount),
+          );
+        }
+      }
+      for (const [year, count] of bucketByYear) {
+        summedByYear.set(year, (summedByYear.get(year) ?? 0) + count);
+      }
+    }
+    const nullMax =
+      nullDoiPubs.length > 0
+        ? Math.max(...nullDoiPubs.map((p) => p.citationsOpenAlex ?? p.citations))
+        : 0;
+    const finalOpenAlex = Math.max(summedOpenAlex, nullMax);
+    keeper.citations = finalOpenAlex;
+    keeper.citationsOpenAlex = finalOpenAlex;
+    keeper.citationsByYear =
+      summedByYear.size > 0
+        ? Array.from(summedByYear, ([year, citedByCount]) => ({ year, citedByCount })).sort(
+            (a, b) => a.year - b.year,
+          )
+        : null;
+  } else {
+    const maxOpenAlex = Math.max(...group.map((p) => p.citationsOpenAlex ?? p.citations));
+    keeper.citations = maxOpenAlex;
+    keeper.citationsOpenAlex = maxOpenAlex;
+    const maxByYear = new Map<number, number>();
+    for (const pub of group) {
+      for (const entry of pub.citationsByYear ?? []) {
+        maxByYear.set(entry.year, Math.max(maxByYear.get(entry.year) ?? 0, entry.citedByCount));
+      }
+    }
+    keeper.citationsByYear =
+      maxByYear.size > 0
+        ? Array.from(maxByYear, ([year, citedByCount]) => ({ year, citedByCount })).sort(
+            (a, b) => a.year - b.year,
+          )
+        : null;
+  }
+
+  // Google Scholar citations: never sum across editions (Scholar groups
+  // editions onto the same title row, so summing would double-count).
+  const scholarValues = group
+    .map((p) => p.citationsScholar)
+    .filter((c): c is number => typeof c === 'number');
+  keeper.citationsScholar = scholarValues.length > 0 ? Math.max(...scholarValues) : null;
+
+  // Open Science stage: inherit max stage across editions unless the latest
+  // edition carried an explicit stage override while older editions did not.
+  const winnerExplicitStage = options.overriddenStagePubs?.has(winner) === true;
+  const otherExplicitStage = sortedDesc
+    .slice(1)
+    .some((p) => options.overriddenStagePubs?.has(p) === true);
+  if (!winnerExplicitStage || otherExplicitStage) {
+    keeper.openScienceStage = Math.max(...group.map((p) => p.openScienceStage));
+  }
+
+  if (group.some((p) => p.featured === true)) {
+    keeper.featured = true;
+  }
+
+  // Inherit curated and non-empty Open Science evidence fields.
+  keeper.openScience = { ...keeper.openScience };
+  const winnerCuratedFields = options.curatedOpenScienceFields?.get(winner);
+  for (const field of OPEN_SCIENCE_TEXT_FIELDS) {
+    if (!winnerCuratedFields?.has(field)) {
+      const curatedDonor = sortedDesc.find(
+        (p) => options.curatedOpenScienceFields?.get(p)?.has(field) && Boolean(p.openScience[field]),
+      );
+      if (curatedDonor?.openScience[field]) {
+        keeper.openScience[field] = curatedDonor.openScience[field];
+        continue;
+      }
+    }
+    if (!keeper.openScience[field]) {
+      const donor = sortedDesc.find((p) => Boolean(p.openScience[field]));
+      if (donor?.openScience[field]) {
+        keeper.openScience[field] = donor.openScience[field];
+      }
+    }
+  }
+  if (!keeper.openScience.oaStatus || !OPEN_OA_STATUSES.has(keeper.openScience.oaStatus)) {
+    const openDonor = sortedDesc.find(
+      (p) => p.openScience.oaStatus !== undefined && p.openScience.oaStatus !== null && OPEN_OA_STATUSES.has(p.openScience.oaStatus),
+    );
+    if (openDonor?.openScience.oaStatus) {
+      keeper.openScience.oaStatus = openDonor.openScience.oaStatus;
+    } else if (!keeper.openScience.oaStatus) {
+      const anyDonor = sortedDesc.find((p) => Boolean(p.openScience.oaStatus));
+      if (anyDonor?.openScience.oaStatus) {
+        keeper.openScience.oaStatus = anyDonor.openScience.oaStatus;
+      }
+    }
+  }
+
+  // Inherit missing bibliographic metadata from earlier editions.
+  for (const other of sortedDesc.slice(1)) {
+    if (!keeper.url && other.url) keeper.url = other.url;
+    if (!keeper.venue && other.venue) {
+      keeper.venue = other.venue;
+      keeper.journalId = keeper.journalId ?? other.journalId;
+    }
+    if (!keeper.abstract && other.abstract) keeper.abstract = other.abstract;
+    if ((keeper.fwci === null || keeper.fwci === undefined) && other.fwci !== null && other.fwci !== undefined) {
+      keeper.fwci = other.fwci;
+    }
+    if (keeper.topics.length === 0 && other.topics.length > 0) {
+      keeper.topics = [...other.topics];
+    }
+    if (!keeper.authorPosition && other.authorPosition) {
+      keeper.authorPosition = other.authorPosition;
+    }
+    if (!keeper.bibtexKey && other.bibtexKey) {
+      keeper.bibtexKey = other.bibtexKey;
+    }
+  }
+
+  return keeper;
+}
+
+function dedupeEditionsInternal(
+  publications: Publication[],
+  options: EditionDedupeOptions = {},
+): { publications: Publication[]; memberToKeeper: Map<Publication, Publication> } {
+  const memberToKeeper = new Map<Publication, Publication>();
+  const replacementAtFirstSeen = new Map<Publication, Publication>();
+  const consumed = new Set<Publication>();
+
+  // 1. Group and merge multi-edition `book` works, building parent-book DOI
+  //    family mappings so multi-edition chapters of merged parent books can
+  //    also collapse without ever merging chapters from distinct books.
+  const booksByTitleKey = new Map<string, Publication[]>();
+  for (const pub of publications) {
+    if (pub.type !== 'book') continue;
+    const key = bookEditionTitleKey(pub.title);
+    if (key === '') continue;
+    const list = booksByTitleKey.get(key) ?? [];
+    list.push(pub);
+    booksByTitleKey.set(key, list);
+  }
+
+  const bookDoiToFamilyId = new Map<string, string>();
+  const knownBookDoiSet = new Set<string>();
+  let familyCounter = 0;
+
+  for (const group of booksByTitleKey.values()) {
+    const clusters = partitionOverlappingAuthorClusters(group);
+    for (const cluster of clusters) {
+      const familyId = `book-family-${familyCounter++}`;
+      for (const book of cluster) {
+        const normDoi = normalizeDoi(book.doi);
+        if (normDoi) {
+          knownBookDoiSet.add(normDoi);
+          bookDoiToFamilyId.set(normDoi, familyId);
+        }
+      }
+      if (cluster.length > 1) {
+        const keeper = mergeEditionCluster(cluster, 'sum-distinct-doi', options);
+        const firstSeen = cluster[0]!;
+        replacementAtFirstSeen.set(firstSeen, keeper);
+        for (const member of cluster) {
+          memberToKeeper.set(member, keeper);
+          if (member !== firstSeen) consumed.add(member);
+        }
+      }
+    }
+  }
+
+  const sortedKnownBookDois = Array.from(knownBookDoiSet).sort((a, b) => b.length - a.length);
+
+  // 2. Group and merge multi-edition `book-chapter` works belonging to the
+  //    SAME parent book edition family (never across different parent books).
+  const chaptersByScopeAndTitle = new Map<string, Publication[]>();
+  for (const pub of publications) {
+    if (pub.type !== 'book-chapter') continue;
+    const parentDoi = extractParentBookDoi(pub.doi, sortedKnownBookDois);
+    const parentScope =
+      (parentDoi ? bookDoiToFamilyId.get(parentDoi) : undefined) ??
+      (parentDoi ? `parent:${parentDoi}` : null);
+    if (!parentScope) continue;
+    const titleKey = bookEditionTitleKey(pub.title);
+    if (titleKey === '') continue;
+    const key = `${parentScope}::${titleKey}`;
+    const list = chaptersByScopeAndTitle.get(key) ?? [];
+    list.push(pub);
+    chaptersByScopeAndTitle.set(key, list);
+  }
+
+  for (const group of chaptersByScopeAndTitle.values()) {
+    if (group.length < 2) continue;
+    const clusters = partitionOverlappingAuthorClusters(group);
+    for (const cluster of clusters) {
+      if (cluster.length > 1) {
+        const keeper = mergeEditionCluster(cluster, 'sum-distinct-doi', options);
+        const firstSeen = cluster[0]!;
+        replacementAtFirstSeen.set(firstSeen, keeper);
+        for (const member of cluster) {
+          memberToKeeper.set(member, keeper);
+          if (member !== firstSeen) consumed.add(member);
+        }
+      }
+    }
+  }
+
+  // 3. Deduplicate same-year identical-title/author mirror records (`type === 'other'`,
+  //    e.g. Rogue Scholar / Zenodo blog mirrors with yearSpan === 0 and non-generic title).
+  const othersByYearAndTitle = new Map<string, Publication[]>();
+  for (const pub of publications) {
+    if (pub.type !== 'other') continue;
+    const titleKey = normalizeTitleKey(pub.title);
+    if (titleKey.length < 20) continue;
+    const key = `${pub.year}::${titleKey}`;
+    const list = othersByYearAndTitle.get(key) ?? [];
+    list.push(pub);
+    othersByYearAndTitle.set(key, list);
+  }
+
+  for (const group of othersByYearAndTitle.values()) {
+    if (group.length < 2) continue;
+    const clusters = partitionOverlappingAuthorClusters(group);
+    for (const cluster of clusters) {
+      if (cluster.length > 1) {
+        const keeper = mergeEditionCluster(cluster, 'max', options);
+        const firstSeen = cluster[0]!;
+        replacementAtFirstSeen.set(firstSeen, keeper);
+        for (const member of cluster) {
+          memberToKeeper.set(member, keeper);
+          if (member !== firstSeen) consumed.add(member);
+        }
+      }
+    }
+  }
+
+  const out: Publication[] = [];
+  for (const pub of publications) {
+    if (consumed.has(pub)) continue;
+    out.push(replacementAtFirstSeen.get(pub) ?? pub);
+  }
+  return { publications: out, memberToKeeper };
+}
+
+/**
+ * Collapse multi-edition books (and multi-edition chapters of merged parent
+ * books, plus same-year mirror records) into the latest edition while summing
+ * OpenAlex citations across distinct edition DOIs, taking the max Google
+ * Scholar citation count, and inheriting Open Science stages and evidence.
+ */
+export function dedupeEditions(publications: Publication[]): Publication[] {
+  return dedupeEditionsInternal(publications).publications;
+}
+
 // ---------------------------------------------------------------------------
 // Overrides
 // ---------------------------------------------------------------------------
@@ -851,8 +1270,12 @@ function matchOverride(
   overrides: Record<string, OverrideEntry>,
 ): { key: string; entry: OverrideEntry } | null {
   if (publication.doi) {
-    for (const [key, entry] of Object.entries(overrides)) {
-      if (entry.doi && normalizeDoi(entry.doi) === publication.doi) return { key, entry };
+    const pubDoi = normalizeDoi(publication.doi);
+    if (pubDoi) {
+      for (const [key, entry] of Object.entries(overrides)) {
+        if (entry.doi && normalizeDoi(entry.doi) === pubDoi) return { key, entry };
+        if (entry.dois?.some((d) => normalizeDoi(d) === pubDoi)) return { key, entry };
+      }
     }
   }
   const titleLower = publication.title.toLowerCase();
@@ -1202,26 +1625,33 @@ export async function syncPortfolio(
   publications = dedupePreprints(publications);
 
   // Apply curated overrides: DOI match first, then case-insensitive titleMatch.
-  // Overrides set the Open Science stage directly so human edits can also
-  // lower (correct) a false-positive inferred stage, and each override key is
-  // counted so unmatched or over-broad entries are reported.
-  const overrideMatchCounts = new Map<string, number>();
-  for (const [key] of Object.entries(overrides)) {
-    overrideMatchCounts.set(key, 0);
-  }
+  // Overrides run before multi-edition book deduplication so an override keyed
+  // to an earlier edition DOI automatically propagates its Open Science stage,
+  // curated URLs, and featured status onto the latest edition keeper, while
+  // match counts are evaluated against distinct post-dedupe keepers.
+  const matchedKeyByPub = new Map<Publication, string>();
+  const overriddenStagePubs = new Set<Publication>();
+  const curatedOpenScienceFields = new Map<Publication, Set<string>>();
   for (const publication of publications) {
     const matched = matchOverride(publication, overrides);
     if (!matched) continue;
     const { key, entry: override } = matched;
-    overrideMatchCounts.set(key, (overrideMatchCounts.get(key) ?? 0) + 1);
+    matchedKeyByPub.set(publication, key);
     if (override.openScienceStage !== undefined && override.openScienceStage !== null) {
       publication.openScienceStage = override.openScienceStage;
+      overriddenStagePubs.add(publication);
     }
     if (override.openScience) {
+      const previousOaUrl = publication.openScience.oaUrl;
+      const definedEvidence = pickDefinedEvidence(override.openScience);
       publication.openScience = {
         ...publication.openScience,
-        ...pickDefinedEvidence(override.openScience),
+        ...definedEvidence,
       };
+      curatedOpenScienceFields.set(publication, new Set(Object.keys(definedEvidence)));
+      if (definedEvidence.oaUrl && (!publication.url || publication.url === previousOaUrl)) {
+        publication.url = definedEvidence.oaUrl;
+      }
     }
     if (override.featured === true) {
       publication.featured = true;
@@ -1230,7 +1660,23 @@ export async function syncPortfolio(
       publication.citationsScholar = override.citationsScholar;
     }
   }
-  for (const [key, count] of overrideMatchCounts) {
+
+  const editionDeduped = dedupeEditionsInternal(publications, {
+    overriddenStagePubs,
+    curatedOpenScienceFields,
+  });
+  publications = editionDeduped.publications;
+
+  const matchedKeepersByKey = new Map<string, Set<Publication>>();
+  for (const [key] of Object.entries(overrides)) {
+    matchedKeepersByKey.set(key, new Set());
+  }
+  for (const [pub, key] of matchedKeyByPub) {
+    const surviving = editionDeduped.memberToKeeper.get(pub) ?? pub;
+    matchedKeepersByKey.get(key)?.add(surviving);
+  }
+  for (const [key, keepers] of matchedKeepersByKey) {
+    const count = keepers.size;
     if (count === 0) {
       console.warn(
         `Override '${key}' matched 0 publications; check its doi/titleMatch in overrides.yaml`,
