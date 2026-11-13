@@ -1,0 +1,25 @@
+journals:
+  - id: international-journal-of-geographical-information-science
+    name: International Journal of Geographical Information Science
+    shortName: IJGIS
+    publisher: Taylor & Francis
+    jif: 5.9
+    jifYear: 2025
+    sjrQuartile: Q1
+    oaModel: hybrid
+    scopeTags:
+      - gis
+      - spatial-methods
+    homepageUrl: https://www.tandfonline.com/journals/tgis20
+  - id: journal-of-open-source-software
+    name: Journal of Open Source Software
+    shortName: JOSS
+    publisher: The Open Journal
+    jif: null
+    jifYear: null
+    sjrQuartile: Q1
+    oaModel: diamond
+    scopeTags:
+      - software
+      - open-science
+    homepageUrl: https://joss.theoj.org

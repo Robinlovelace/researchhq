@@ -42,16 +42,20 @@ export const OPEN_SCIENCE_STAGE_DESCRIPTIONS: Record<OpenScienceStage, string> =
 // Open science evidence attached to a publication
 // ---------------------------------------------------------------------------
 
+const HttpUrlSchema = z
+  .string()
+  .regex(/^https?:\/\/\S+$/i, 'Expected an http(s) URL without spaces');
+
 export const OpenScienceEvidenceSchema = z.object({
   oaStatus: z
     .enum(['gold', 'diamond', 'green', 'hybrid', 'bronze', 'closed', 'unknown'])
     .nullish()
     .describe('Open access status of the published version of record'),
-  oaUrl: z.string().nullish(),
-  dataUrl: z.string().nullish(),
-  codeUrl: z.string().nullish(),
-  reproducibleRepoUrl: z.string().nullish(),
-  interactiveToolUrl: z.string().nullish(),
+  oaUrl: HttpUrlSchema.nullish(),
+  dataUrl: HttpUrlSchema.nullish(),
+  codeUrl: HttpUrlSchema.nullish(),
+  reproducibleRepoUrl: HttpUrlSchema.nullish(),
+  interactiveToolUrl: HttpUrlSchema.nullish(),
   interactiveToolName: z.string().nullish(),
   rationale: z.string().nullish(),
 });
@@ -75,10 +79,12 @@ export const AuthorMetricsSchema = z.object({
   worksCount: z.number(),
   peerReviewedCount: z.number(),
   citedByCount: z.number(),
+  citedByCountProfile: z.number().nullish(),
   citedByScholar: z.number().nullish(),
   hIndex: z.number(),
   hIndexScholar: z.number().nullish(),
   i10Index: z.number(),
+  i10IndexScholar: z.number().nullish(),
   twoYearMeanCitedness: z.number().nullish(),
   oaPercentage: z.number(),
   stageCounts: StageCountsSchema,
@@ -132,7 +138,7 @@ export const JournalMetricSchema = z.object({
   apcUsd: z.number().nullish(),
   reviewSpeedWeeks: z.number().nullish(),
   scopeTags: z.array(z.string()),
-  homepageUrl: z.string().nullish(),
+  homepageUrl: HttpUrlSchema.nullish(),
   authorPublishedCount: z.number(),
   authorCitationsTotal: z.number(),
   authorCitationsMean: z.number(),
@@ -175,7 +181,10 @@ export const PublicationSchema = z.object({
   openScienceStage: OpenScienceStageSchema,
   openScience: OpenScienceEvidenceSchema,
   bibtexKey: z.string().nullish(),
-  url: z.string().nullish(),
+  url: z
+    .string()
+    .regex(/^https?:\/\/\S+$/i, 'Expected an http(s) URL without spaces')
+    .nullish(),
   featured: z.boolean().optional(),
 });
 
@@ -199,14 +208,19 @@ export type TargetJournalCandidate = z.infer<typeof TargetJournalCandidateSchema
 
 export const RepoLinkSchema = z.object({
   label: z.string(),
-  url: z.string(),
+  url: z
+    .string()
+    .refine(
+      (v) => v === '' || /^https?:\/\/\S+$/i.test(v),
+      'Expected empty string (redacted private repo) or an http(s) URL',
+    ),
   visibility: z.enum(['public', 'private']).optional(),
   redactUrlInPublic: z.boolean().optional(),
 });
 
 export type RepoLink = z.infer<typeof RepoLinkSchema>;
 
-export const PlannedPaperSchema = z.object({
+export const PlannedPaperBaseSchema = z.object({
   slug: z.string(),
   title: z.string(),
   shortTitle: z.string(),
@@ -221,7 +235,9 @@ export const PlannedPaperSchema = z.object({
     'accepted',
   ]),
   readinessPercent: z.number().min(0).max(100),
-  targetSubmissionQuarter: z.string(),
+  targetSubmissionQuarter: z
+    .string()
+    .regex(/^\d{4}-Q[1-4]$/, 'Expected YYYY-QN (e.g. 2027-Q2)'),
   targetPublicationYear: z.number(),
   targetOpenScienceStage: z.number().int().min(1).max(5),
   currentOpenScienceStage: OpenScienceStageSchema,
@@ -231,11 +247,56 @@ export const PlannedPaperSchema = z.object({
   keyCitations: z.array(z.string()),
   collaborators: z.array(z.string()),
   repoUrls: z.array(RepoLinkSchema),
-  interactiveToolUrl: z.string().nullish(),
+  interactiveToolUrl: z
+    .string()
+    .regex(/^https?:\/\/\S+$/i, 'Expected an http(s) URL')
+    .nullish(),
   nextMilestones: z.array(z.string()),
   targetJournals: z.array(TargetJournalCandidateSchema),
   privateNotes: z.string().nullish(),
 });
+
+/**
+ * Cross-field checks on planned papers:
+ * (a) the submission year parsed from targetSubmissionQuarter must not fall
+ *     after targetPublicationYear;
+ * (b) targetJournals must have unique journalIds and unique ranks.
+ */
+function plannedPaperCrossFieldChecks(
+  val: z.infer<typeof PlannedPaperBaseSchema>,
+  ctx: z.RefinementCtx,
+): void {
+  const submissionYear = Number.parseInt(val.targetSubmissionQuarter.slice(0, 4), 10);
+  if (Number.isFinite(submissionYear) && submissionYear > val.targetPublicationYear) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['targetSubmissionQuarter'],
+      message: `targetSubmissionQuarter year ${submissionYear} must not be after targetPublicationYear ${val.targetPublicationYear}`,
+    });
+  }
+  const seenJournalIds = new Set<string>();
+  const seenRanks = new Set<number>();
+  for (const [index, candidate] of val.targetJournals.entries()) {
+    if (seenJournalIds.has(candidate.journalId)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['targetJournals', index, 'journalId'],
+        message: `Duplicate targetJournal journalId: ${candidate.journalId}`,
+      });
+    }
+    seenJournalIds.add(candidate.journalId);
+    if (seenRanks.has(candidate.rank)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['targetJournals', index, 'rank'],
+        message: `Duplicate targetJournal rank: ${candidate.rank}`,
+      });
+    }
+    seenRanks.add(candidate.rank);
+  }
+}
+
+export const PlannedPaperSchema = PlannedPaperBaseSchema.superRefine(plannedPaperCrossFieldChecks);
 
 export type PlannedPaper = z.infer<typeof PlannedPaperSchema>;
 
@@ -273,6 +334,13 @@ export const ResearchHqConfigSchema = z.object({
       orcid: z.string().optional(),
       minYear: z.number().optional(),
       excludeTypes: z.array(z.string()).optional(),
+      scholarSummary: z
+        .object({
+          citedByCount: z.number().optional(),
+          hIndex: z.number().optional(),
+          i10Index: z.number().optional(),
+        })
+        .optional(),
     })
     .optional(),
   paths: z
@@ -281,6 +349,8 @@ export const ResearchHqConfigSchema = z.object({
       journalMetrics: z.string().optional(),
       overrides: z.string().optional(),
       publicExport: z.string().optional(),
+      scholarCsv: z.string().nullish(),
+      publicationsYml: z.string().nullish(),
     })
     .optional(),
 });

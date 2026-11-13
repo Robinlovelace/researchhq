@@ -1,0 +1,343 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Modern Web Guidance: Color-Scheme & Semantic Light/Dark Design System
+   ========================================================================== */
+:root {
+  color-scheme: light dark;
+  --surface-canvas: light-dark(#f8fafc, #0b1120);
+  --surface-card: light-dark(#ffffff, #111827);
+  --surface-subtle: light-dark(#f1f5f9, #1e293b);
+  --surface-elevated: light-dark(#ffffff, #172033);
+  --border-subtle: light-dark(#cbd5e1, #334155);
+  --border-strong: light-dark(#64748b, #64748b);
+  --ink-primary: light-dark(#0f172a, #f8fafc);
+  --ink-secondary: light-dark(#334155, #cbd5e1);
+  --ink-muted: light-dark(#475569, #b6c5d8);
+  --accent-primary: light-dark(#0f766e, #2dd4bf);
+  --accent-primary-ink: light-dark(#ffffff, #042f2e);
+  --accent-secondary: light-dark(#1d4ed8, #60a5fa);
+  --accent-amber: light-dark(#b45309, #fbbf24);
+  --accent-violet: light-dark(#6d28d9, #c084fc);
+  --focus-ring: light-dark(#0f766e, #2dd4bf);
+
+  accent-color: var(--accent-primary);
+}
+
+/* Map <meta name="color-scheme"> user override back onto :root so light-dark() cascades */
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  color-scheme: light;
+}
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  color-scheme: dark;
+}
+
+html {
+  background-color: var(--surface-canvas);
+  color: var(--ink-primary);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+  background-color: var(--surface-canvas);
+  color: var(--ink-primary);
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--accent-primary);
+  color: var(--accent-primary-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Visually hidden helper for live announcements & accessible labels */
+.sr-only-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visibility (>= 24x24px interactive targets) */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Interactive SVG shapes (chart bars / scatter points) need an explicit
+   focus indicator: global :focus-visible alone does not reach <g role="button"> */
+svg g[role='button']:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Forced-Colors (Windows High Contrast) survival rules
+   ========================================================================== */
+@media (forced-colors: active) {
+  /* Progress bar fills: system Highlight colour keeps them visible;
+     forced-color-adjust: none lets the fill render without being flattened */
+  [data-progress-fill] {
+    background-color: Highlight;
+    forced-color-adjust: none;
+  }
+  /* Toggle (aria-pressed) buttons: a ButtonText outline distinguishes the
+     pressed state when background colours are stripped */
+  button[aria-pressed='true'] {
+    outline: 2px solid ButtonText;
+    outline-offset: -2px;
+  }
+}
+
+/* ==========================================================================
+   Tabs: Single horizontal scroll strip + forced-colors-safe border underline
+   ========================================================================== */
+.tabs-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 0.25rem;
+}
+
+.tabs-strip [role="tab"] {
+  flex: none;
+  position: relative;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.tabs-strip [role="tab"]:hover {
+  color: var(--ink-primary);
+  background-color: var(--surface-subtle);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.tabs-strip [role="tab"][aria-selected="true"] {
+  color: var(--ink-primary);
+}
+
+.tabs-strip [role="tab"][aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.5rem;
+  bottom: 0;
+  border-bottom: 3px solid var(--accent-primary);
+}
+
+/* ==========================================================================
+   Responsive & Sortable Tables (@container queries + button inside <th scope="col">)
+   ========================================================================== */
+.table-wrapper {
+  container-type: inline-size;
+  container-name: data-table;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  background-color: var(--surface-card);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table th {
+  text-align: left;
+  background-color: var(--surface-subtle);
+  color: var(--ink-secondary);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0;
+  white-space: nowrap;
+}
+
+.data-table th.col-padded {
+  padding: 0.75rem 1rem;
+}
+
+.data-table th > button.sort-btn {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.data-table th > button.sort-btn:hover {
+  color: var(--ink-primary);
+  background-color: color-mix(in oklab, var(--accent-primary) 10%, transparent);
+}
+
+.data-table th[aria-sort="ascending"],
+.data-table th[aria-sort="descending"] {
+  color: var(--ink-primary);
+  background-color: color-mix(in oklab, var(--accent-primary) 12%, var(--surface-subtle));
+}
+
+.data-table td {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.data-table tbody tr.interactive-row {
+  cursor: pointer;
+}
+.data-table tbody tr.interactive-row:hover {
+  background-color: color-mix(in oklab, var(--accent-primary) 6%, var(--surface-card));
+}
+
+/* Container query stacked card layout when table container < 620px */
+@container data-table (max-width: 620px) {
+  .data-table.responsive-cards thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .data-table.responsive-cards,
+  .data-table.responsive-cards tbody,
+  .data-table.responsive-cards tr,
+  .data-table.responsive-cards td {
+    display: block;
+    width: 100%;
+  }
+  .data-table.responsive-cards tbody tr {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .data-table.responsive-cards td {
+    border-bottom: 0;
+    padding: 0.25rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .data-table.responsive-cards td[data-label]::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+  }
+  .data-table.responsive-cards td.cell-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .data-table.responsive-cards td.cell-title::before {
+    content: none;
+  }
+}
+
+/* ==========================================================================
+   Native Modal <dialog> with Light Dismiss & Scroll Containment
+   ========================================================================== */
+dialog.hq-dialog {
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background-color: var(--surface-elevated);
+  color: var(--ink-primary);
+  max-width: min(48rem, calc(100vw - 1.5rem));
+  width: 100%;
+  max-height: calc(100dvh - 2rem);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.35);
+}
+
+dialog.hq-dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog.hq-dialog::backdrop {
+  background: rgb(15 23 42 / 0.6);
+  backdrop-filter: blur(3px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* ==========================================================================
+   Complex Layout Containment (Kanban lanes & heavy analytical sections)
+   ========================================================================== */
+.contain-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px auto 640px;
+}
+
+.kanban-lane {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 280px auto 560px;
+}
+
+/* Scrollable code blocks */
+pre[role="region"] {
+  overflow-x: auto;
+  padding: 0.875rem 1rem;
+  border-radius: 0.625rem;
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+}

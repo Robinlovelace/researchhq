@@ -1,0 +1,79 @@
+name: CI & Deploy ResearchHQ Demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Build @researchhq/schema and @researchhq/cli
+        run: |
+          npm run build -w @researchhq/schema
+          npm run build -w @researchhq/cli
+
+      - name: Verify npm tarball contents (@researchhq/schema and @researchhq/cli)
+        run: |
+          npm pack --dry-run --json --ignore-scripts -w @researchhq/schema | node -e "import('node:fs').then(fs=>{const p=JSON.parse(fs.readFileSync(0,'utf8'))[0]; if(!p.files.some(f=>f.path==='dist/index.js')) process.exit(1);})"
+          npm pack --dry-run --json --ignore-scripts -w @researchhq/cli | node -e "import('node:fs').then(fs=>{const p=JSON.parse(fs.readFileSync(0,'utf8'))[0]; if(!p.files.some(f=>f.path==='dist/bin.js')) process.exit(1);})"
+
+      - name: Run schema and CLI unit tests
+        run: npm test
+
+      - name: Type-check @researchhq/dashboard
+        run: npm run check -w @researchhq/dashboard
+
+      - name: Install Playwright Chromium & run E2E + WCAG AA suite
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e -w @researchhq/dashboard
+
+      - name: Build @researchhq/dashboard for /researchhq
+        env:
+          RESEARCHHQ_BASE_PATH: /researchhq
+        run: |
+          npm run build -w @researchhq/dashboard
+          touch packages/dashboard/build/.nojekyll
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/dashboard/build
+
+  deploy-pages:
+    needs: verify-and-build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

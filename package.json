@@ -2,6 +2,7 @@
   "name": "researchhq-monorepo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Modular open-source interactive research portfolio and future-publications planning system",
   "license": "MIT",
   "author": "Robin Lovelace <Robinlovelace@users.noreply.github.com>",
@@ -17,7 +18,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "test": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "npm run test:e2e -w @researchhq/dashboard",
     "check": "npm run check --workspaces --if-present",
     "cli": "node --import tsx packages/cli/src/bin.ts"
   },

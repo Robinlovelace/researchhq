@@ -4,6 +4,7 @@
  */
 import type {
   JournalMetric,
+  OpenScienceStage,
   PlannedPaper,
   Publication,
   StageCountKey,
@@ -28,6 +29,167 @@ export function computeHIndex(citations: number[]): number {
 /** i10-index: the number of publications with at least 10 citations. */
 export function computeI10Index(citations: number[]): number {
   return citations.filter((c) => c >= 10).length;
+}
+
+// ---------------------------------------------------------------------------
+// Field-Weighted Citation Impact (FWCI)
+// ---------------------------------------------------------------------------
+
+export interface FwciSummary {
+  evaluatedCount: number;
+  medianFwci: number | null;
+  meanFwci: number | null;
+  maxFwci: number | null;
+  aboveWorldAverageCount: number;
+  aboveWorldAverageShare: number | null;
+}
+
+/** A finite positive FWCI value; OpenAlex emits null or 0 for unnormalised works. */
+function hasValidFwci(publication: Publication): boolean {
+  return (
+    typeof publication.fwci === 'number' &&
+    Number.isFinite(publication.fwci) &&
+    publication.fwci > 0
+  );
+}
+
+const EMPTY_FWCI_SUMMARY: FwciSummary = {
+  evaluatedCount: 0,
+  medianFwci: null,
+  meanFwci: null,
+  maxFwci: null,
+  aboveWorldAverageCount: 0,
+  aboveWorldAverageShare: null,
+};
+
+/**
+ * Summarise Field-Weighted Citation Impact across publications. FWCI 1.00 is
+ * the world average for the field and publication year. Works without a finite
+ * positive `fwci` value are excluded. Statistics are rounded to 2 decimal
+ * places; the above-world-average share is a percentage rounded to 1 decimal.
+ */
+export function computeFwciSummary(publications: Publication[]): FwciSummary {
+  const values = publications.filter(hasValidFwci).map((p) => p.fwci as number);
+  if (values.length === 0) return { ...EMPTY_FWCI_SUMMARY };
+
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  const median =
+    sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+  const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+  const max = sorted[sorted.length - 1];
+  const aboveWorldAverageCount = values.filter((v) => v > 1.0).length;
+  return {
+    evaluatedCount: values.length,
+    medianFwci: round2(median),
+    meanFwci: round2(mean),
+    maxFwci: round2(max),
+    aboveWorldAverageCount,
+    aboveWorldAverageShare:
+      Math.round((aboveWorldAverageCount / values.length) * 1000) / 10,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Open science upgrade opportunities
+// ---------------------------------------------------------------------------
+
+export interface OpenScienceUpgradeOpportunity {
+  publicationId: string;
+  doi: string | null;
+  title: string;
+  year: number;
+  citations: number;
+  fwci: number | null;
+  currentStage: OpenScienceStage;
+  targetStage: OpenScienceStage;
+  actionLabel: string;
+  overrideKeySuggestion: string;
+}
+
+/** Action mapping from the current open science stage to the next upgrade. */
+const UPGRADE_ACTIONS: Record<number, { targetStage: OpenScienceStage; actionLabel: string }> = {
+  0: {
+    targetStage: 1,
+    actionLabel: 'Deposit accepted manuscript (Green OA) or record open-access URL',
+  },
+  1: {
+    targetStage: 3,
+    actionLabel: 'Link open analysis scripts or software repository (codeUrl in overrides.yaml)',
+  },
+  2: {
+    targetStage: 3,
+    actionLabel: 'Publish and link analysis code alongside existing open dataset',
+  },
+  3: {
+    targetStage: 4,
+    actionLabel: 'Link reproducible Quarto/RMarkdown manuscript repo (reproducibleRepoUrl)',
+  },
+};
+
+/**
+ * Suggested overrides.yaml key: lowercase slug of the first 4 alphabetic or
+ * numeric words of the title joined by hyphens, plus the publication year.
+ */
+function suggestOverrideKey(title: string, year: number): string {
+  const words = title
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w !== '')
+    .slice(0, 4);
+  return `${words.join('-')}-${year}`;
+}
+
+const UPGRADEABLE_TYPES: ReadonlySet<Publication['type']> = new Set([
+  'article',
+  'book',
+  'book-chapter',
+]);
+
+/**
+ * Identify the highest-impact publications below Stage 4 (reproducible
+ * documented paper) with a concrete next upgrade action per publication.
+ * Candidates are scored by citations plus five times FWCI (when available) so
+ * field-weighted impact breaks ties beyond raw citation counts, and sorted
+ * descending by score with year descending then title ascending tie-breaks.
+ */
+export function computeOpenScienceGaps(
+  publications: Publication[],
+  limit = 10,
+): OpenScienceUpgradeOpportunity[] {
+  const scored = publications
+    .filter((p) => UPGRADEABLE_TYPES.has(p.type) && p.openScienceStage < 4)
+    .map((p) => ({
+      publication: p,
+      score:
+        p.citations + (hasValidFwci(p) ? (p.fwci as number) * 5 : 0),
+    }))
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.publication.year - a.publication.year ||
+        a.publication.title.localeCompare(b.publication.title),
+    )
+    .slice(0, Math.max(0, limit));
+
+  const out: OpenScienceUpgradeOpportunity[] = [];
+  for (const { publication } of scored) {
+    const action = UPGRADE_ACTIONS[publication.openScienceStage];
+    if (!action) continue;
+    out.push({
+      publicationId: publication.id,
+      doi: publication.doi ?? null,
+      title: publication.title,
+      year: publication.year,
+      citations: publication.citations,
+      fwci: hasValidFwci(publication) ? (publication.fwci as number) : null,
+      currentStage: publication.openScienceStage as OpenScienceStage,
+      targetStage: action.targetStage,
+      actionLabel: action.actionLabel,
+      overrideKeySuggestion: suggestOverrideKey(publication.title, publication.year),
+    });
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------
@@ -159,6 +321,29 @@ function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+/**
+ * Merge two base journal partials that resolve to the same normalized id,
+ * keeping every defined non-null field from either side. Empty arrays count
+ * as "not set" so they never wipe curated scope tags. Aggregate counters and
+ * `metricSource` already set on the existing entry are preserved unless the
+ * incoming entry carries its own.
+ */
+function mergeJournalBaseEntries(
+  existing: JournalMetric,
+  incoming: Partial<JournalMetric>,
+): JournalMetric {
+  const merged: JournalMetric = { ...existing };
+  const incomingRecord = incoming as Record<string, unknown>;
+  for (const [key, value] of Object.entries(incomingRecord)) {
+    if (key === 'metricSource' || key === 'id') continue;
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value) && value.length === 0) continue;
+    (merged as unknown as Record<string, unknown>)[key] = value;
+  }
+  merged.metricSource = incoming.metricSource ?? existing.metricSource;
+  return merged;
+}
+
 function createJournalMetric(
   id: string,
   name: string,
@@ -221,13 +406,9 @@ export function aggregateJournalMetrics(
     const name = base.name ?? rawId;
     const existing = entries.get(id);
     if (existing) {
-      const merged = createJournalMetric(existing.id, existing.name, base, 'hybrid');
-      // Keep already-set aggregate counters; curated fields may be refreshed.
-      merged.authorPublishedCount = existing.authorPublishedCount;
-      merged.authorCitationsTotal = existing.authorCitationsTotal;
-      merged.authorCitationsMean = existing.authorCitationsMean;
-      merged.targetPaperCount = existing.targetPaperCount;
-      merged.metricSource = base.metricSource ?? existing.metricSource;
+      // Merge defined non-null fields from both entries instead of letting
+      // nulls from the later entry overwrite the earlier entry's metadata.
+      const merged = mergeJournalBaseEntries(existing, { ...base, name });
       entries.set(id, merged);
       byName.set(normalizeJournalId(merged.name), merged);
     } else {

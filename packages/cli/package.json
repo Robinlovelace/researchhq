@@ -16,12 +16,38 @@
       "default": "./dist/index.js"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "check": "tsc --noEmit -p tsconfig.json"
+    "check": "tsc --noEmit -p tsconfig.json",
+    "prepack": "npm run build"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Robin Lovelace <Robinlovelace@users.noreply.github.com>",
+  "homepage": "https://robinlovelace.net/researchhq/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Robinlovelace/researchhq.git",
+    "directory": "packages/cli"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "research",
+    "bibliometrics",
+    "openalex",
+    "open-science",
+    "portfolio"
+  ],
   "dependencies": {
-    "@researchhq/schema": "*",
+    "@researchhq/schema": "^0.1.0",
     "yaml": "^2.7.0",
     "zod": "^4.6.7"
   }

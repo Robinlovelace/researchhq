@@ -1,0 +1,9 @@
+# Example ResearchHQ instance configuration
+author:
+  name: Jakub Nowosad
+  role: Associate Professor of Spatial Data Science
+  affiliation: Adam Mickiewicz University, Poznan
+  orcid: 0000-0002-1057-3721
+  website: https://jakubnowosad.com
+  github: https://github.com/Nowosad
+  bio: Spatial pattern analysis, geocomputation, and open-source scientific software in R and Python.

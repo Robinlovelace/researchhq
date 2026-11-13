@@ -1,0 +1,505 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-11-13T12:00:00Z",
+  "sanitized": true,
+  "author": {
+    "name": "Dr Alex Rivera (Demo Persona)",
+    "role": "Associate Professor of Urban Spatial Analytics",
+    "affiliation": "Civic Geomatics Institute (Synthetic Demo)",
+    "orcid": "0000-0002-1825-0097",
+    "website": "https://github.com/Robinlovelace/researchhq",
+    "github": "https://github.com/Robinlovelace/researchhq",
+    "metrics": {
+      "worksCount": 4,
+      "peerReviewedCount": 3,
+      "citedByCount": 176,
+      "hIndex": 4,
+      "hIndexScholar": 4,
+      "i10Index": 4,
+      "i10IndexScholar": 4,
+      "oaPercentage": 100,
+      "stageCounts": {
+        "0": 0,
+        "1": 1,
+        "2": 0,
+        "3": 1,
+        "4": 1,
+        "5": 1
+      },
+      "updatedAt": "2026-11-13T12:00:00Z",
+      "citedByScholar": 218
+    }
+  },
+  "publications": [
+    {
+      "id": "demo-2021-transit",
+      "doi": "10.1016/j.jtrangeo.2021.100001",
+      "title": "OpenTransitMap: National GTFS accessibility surfaces for regional equity planning",
+      "year": 2021,
+      "type": "article",
+      "venue": "Journal of Transport Geography",
+      "journalId": "journal-of-transport-geography",
+      "authors": [
+        "Alex Rivera",
+        "Priya Nair"
+      ],
+      "authorPosition": "first",
+      "citations": 84,
+      "citationsOpenAlex": 84,
+      "citationsScholar": 98,
+      "fwci": 3.4,
+      "topics": [
+        "public transit",
+        "accessibility",
+        "open science"
+      ],
+      "openScienceStage": 5,
+      "openScience": {
+        "oaStatus": "hybrid",
+        "oaUrl": "https://example.org/opentransitmap-paper.pdf",
+        "dataUrl": "https://zenodo.org/records/100001",
+        "codeUrl": "https://github.com/example-lab/opentransitmap",
+        "reproducibleRepoUrl": "https://github.com/example-lab/opentransitmap-paper",
+        "interactiveToolUrl": "https://opentransitmap.example.org"
+      },
+      "url": "https://doi.org/10.1016/j.jtrangeo.2021.100001",
+      "featured": true
+    },
+    {
+      "id": "demo-2023-heat",
+      "doi": "10.1016/j.compenvurbsys.2023.100002",
+      "title": "Street-canyon shade routing for pedestrian heat-stress adaptation",
+      "year": 2023,
+      "type": "article",
+      "venue": "Computers, Environment and Urban Systems",
+      "journalId": "computers-environment-and-urban-systems",
+      "authors": [
+        "Alex Rivera",
+        "Mateo Silva",
+        "Lin Chen"
+      ],
+      "authorPosition": "first",
+      "citations": 42,
+      "citationsOpenAlex": 42,
+      "citationsScholar": 51,
+      "fwci": 2.8,
+      "topics": [
+        "urban climate",
+        "pedestrian routing",
+        "GIS"
+      ],
+      "openScienceStage": 4,
+      "openScience": {
+        "oaStatus": "gold",
+        "oaUrl": "https://example.org/shade-routing.pdf",
+        "codeUrl": "https://github.com/example-lab/shaderoute",
+        "reproducibleRepoUrl": "https://github.com/example-lab/shaderoute-paper"
+      },
+      "url": "https://doi.org/10.1016/j.compenvurbsys.2023.100002"
+    },
+    {
+      "id": "demo-2024-diamond",
+      "doi": "10.16997/ats.1500",
+      "title": "Participatory school-street audits with open smartphone telemetry",
+      "year": 2024,
+      "type": "article",
+      "venue": "Active Travel Studies",
+      "journalId": "active-travel-studies",
+      "authors": [
+        "Priya Nair",
+        "Alex Rivera"
+      ],
+      "authorPosition": "last",
+      "citations": 19,
+      "citationsOpenAlex": 19,
+      "citationsScholar": 24,
+      "fwci": 2.1,
+      "topics": [
+        "active travel",
+        "school streets",
+        "citizen science"
+      ],
+      "openScienceStage": 3,
+      "openScience": {
+        "oaStatus": "diamond",
+        "oaUrl": "https://example.org/school-streets.pdf",
+        "codeUrl": "https://github.com/example-lab/schoolstreets"
+      },
+      "url": "https://doi.org/10.16997/ats.1500"
+    },
+    {
+      "id": "demo-2025-book",
+      "doi": "10.1201/9781003000001",
+      "title": "Reproducible Urban Mobility Analytics in R and Python",
+      "year": 2025,
+      "type": "book",
+      "venue": "CRC Press",
+      "authors": [
+        "Alex Rivera"
+      ],
+      "authorPosition": "solo",
+      "citations": 31,
+      "citationsOpenAlex": 31,
+      "citationsScholar": 45,
+      "fwci": 4.1,
+      "topics": [
+        "spatial data science",
+        "reproducibility"
+      ],
+      "openScienceStage": 1,
+      "openScience": {
+        "oaStatus": "green",
+        "oaUrl": "https://book.example.org"
+      },
+      "url": "https://book.example.org"
+    }
+  ],
+  "journals": [
+    {
+      "id": "journal-of-transport-geography",
+      "name": "Journal of Transport Geography",
+      "shortName": null,
+      "venueType": "journal",
+      "issn": [],
+      "publisher": "Elsevier",
+      "openalexSourceId": null,
+      "twoYearMeanCitedness": 6.4,
+      "journalHIndex": 158,
+      "journalI10Index": null,
+      "jif": 6.8,
+      "jifYear": 2025,
+      "citescore": null,
+      "sjrScore": null,
+      "sjrQuartile": "Q1",
+      "isOa": false,
+      "isInDoaj": false,
+      "oaModel": "hybrid",
+      "apcUsd": null,
+      "reviewSpeedWeeks": null,
+      "scopeTags": [
+        "transport",
+        "accessibility",
+        "mobility"
+      ],
+      "homepageUrl": null,
+      "authorPublishedCount": 1,
+      "authorCitationsTotal": 84,
+      "authorCitationsMean": 84,
+      "targetPaperCount": 0,
+      "metricSource": "hybrid"
+    },
+    {
+      "id": "computers-environment-and-urban-systems",
+      "name": "Computers, Environment and Urban Systems",
+      "shortName": null,
+      "venueType": "journal",
+      "issn": [],
+      "publisher": "Elsevier",
+      "openalexSourceId": null,
+      "twoYearMeanCitedness": 8.6,
+      "journalHIndex": 136,
+      "journalI10Index": null,
+      "jif": 7.9,
+      "jifYear": 2025,
+      "citescore": null,
+      "sjrScore": null,
+      "sjrQuartile": "Q1",
+      "isOa": false,
+      "isInDoaj": false,
+      "oaModel": "hybrid",
+      "apcUsd": null,
+      "reviewSpeedWeeks": null,
+      "scopeTags": [
+        "gis",
+        "urban-analytics",
+        "spatial-data"
+      ],
+      "homepageUrl": null,
+      "authorPublishedCount": 1,
+      "authorCitationsTotal": 42,
+      "authorCitationsMean": 42,
+      "targetPaperCount": 1,
+      "metricSource": "hybrid"
+    },
+    {
+      "id": "active-travel-studies",
+      "name": "Active Travel Studies",
+      "shortName": null,
+      "venueType": "journal",
+      "issn": [],
+      "publisher": "University of Westminster Press",
+      "openalexSourceId": null,
+      "twoYearMeanCitedness": 2.1,
+      "journalHIndex": 14,
+      "journalI10Index": null,
+      "jif": null,
+      "jifYear": null,
+      "citescore": null,
+      "sjrScore": null,
+      "sjrQuartile": "Q2",
+      "isOa": false,
+      "isInDoaj": true,
+      "oaModel": "diamond",
+      "apcUsd": 0,
+      "reviewSpeedWeeks": null,
+      "scopeTags": [
+        "active-travel",
+        "cycling",
+        "walking"
+      ],
+      "homepageUrl": null,
+      "authorPublishedCount": 1,
+      "authorCitationsTotal": 19,
+      "authorCitationsMean": 19,
+      "targetPaperCount": 1,
+      "metricSource": "hybrid"
+    },
+    {
+      "id": "crc-press",
+      "name": "CRC Press",
+      "shortName": null,
+      "venueType": "journal",
+      "issn": [],
+      "publisher": null,
+      "openalexSourceId": null,
+      "twoYearMeanCitedness": null,
+      "journalHIndex": null,
+      "journalI10Index": null,
+      "jif": null,
+      "jifYear": null,
+      "citescore": null,
+      "sjrScore": null,
+      "sjrQuartile": null,
+      "isOa": false,
+      "isInDoaj": false,
+      "oaModel": "unknown",
+      "apcUsd": null,
+      "reviewSpeedWeeks": null,
+      "scopeTags": [],
+      "homepageUrl": null,
+      "authorPublishedCount": 1,
+      "authorCitationsTotal": 31,
+      "authorCitationsMean": 31,
+      "targetPaperCount": 0,
+      "metricSource": "openalex"
+    }
+  ],
+  "plannedPapers": [
+    {
+      "slug": "demo-multimodal-equity",
+      "title": "Dynamic multimodal accessibility budgets under climate disruption scenarios",
+      "shortTitle": "Multimodal equity budgets",
+      "category": "flagship-project",
+      "status": "drafting",
+      "readinessPercent": 75,
+      "targetSubmissionQuarter": "2026-Q4",
+      "targetPublicationYear": 2027,
+      "targetOpenScienceStage": 5,
+      "currentOpenScienceStage": 4,
+      "summary": "Couples high-resolution flood disruption surfaces with GTFS and cycle network routing across 12 metropolitan regions.",
+      "scientificGapFilled": "Static accessibility indicators overestimate network resilience during extreme weather events.",
+      "methodologyHighlights": [
+        "Time-expanded GTFS + cycle routing",
+        "Quarto reproducible manuscript + live PMTiles viewer"
+      ],
+      "keyCitations": [
+        "10.1016/j.jtrangeo.2021.100001"
+      ],
+      "collaborators": [
+        "Alex Rivera",
+        "Priya Nair"
+      ],
+      "repoUrls": [
+        {
+          "label": "example-lab/equity-budgets",
+          "url": "https://github.com/Robinlovelace/researchhq",
+          "visibility": "public"
+        }
+      ],
+      "interactiveToolUrl": "https://robinlovelace.net/researchhq/",
+      "nextMilestones": [
+        "Complete sensitivity runs across 3 coastal cities",
+        "Finalise Quarto appendix"
+      ],
+      "targetJournals": [
+        {
+          "journalId": "computers-environment-and-urban-systems",
+          "journalName": "Computers, Environment and Urban Systems",
+          "rank": 1,
+          "fitScore": 91,
+          "fitRationale": "Strong fit for open spatial decision-support pipelines."
+        }
+      ]
+    },
+    {
+      "slug": "demo-diamond-benchmark",
+      "title": "Open benchmark datasets for municipal kerbside and micromobility allocation",
+      "shortTitle": "Kerbside open benchmark",
+      "category": "literature-gap",
+      "status": "active-analysis",
+      "readinessPercent": 45,
+      "targetSubmissionQuarter": "2027-Q2",
+      "targetPublicationYear": 2027,
+      "targetOpenScienceStage": 4,
+      "currentOpenScienceStage": 2,
+      "summary": "Harmonises kerbside inventory schemas and open micromobility trip counts across six European cities.",
+      "scientificGapFilled": "Municipal kerbside studies rely on incompatible proprietary schemas.",
+      "methodologyHighlights": [
+        "GeoParquet benchmark release",
+        "Cross-city validation suite"
+      ],
+      "keyCitations": [],
+      "collaborators": [
+        "Alex Rivera",
+        "Mateo Silva"
+      ],
+      "repoUrls": [
+        {
+          "label": "Partner data embargoed",
+          "url": "",
+          "visibility": "private"
+        }
+      ],
+      "interactiveToolUrl": null,
+      "nextMilestones": [
+        "Publish synthetic sample GeoParquet on Zenodo"
+      ],
+      "targetJournals": [
+        {
+          "journalId": "active-travel-studies",
+          "journalName": "Active Travel Studies",
+          "rank": 1,
+          "fitScore": 87,
+          "fitRationale": "Diamond OA (bash APC) with strong municipal policy readership."
+        }
+      ]
+    }
+  ],
+  "timeSeries": [
+    {
+      "year": 2021,
+      "publishedCount": 1,
+      "articlesCount": 1,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 1,
+      "stage4PlusCount": 1,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 84,
+      "plannedSubmissionsCount": 0,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [],
+      "isFuture": false
+    },
+    {
+      "year": 2022,
+      "publishedCount": 0,
+      "articlesCount": 0,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 0,
+      "stage4PlusCount": 0,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 0,
+      "plannedSubmissionsCount": 0,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [],
+      "isFuture": false
+    },
+    {
+      "year": 2023,
+      "publishedCount": 1,
+      "articlesCount": 1,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 1,
+      "stage4PlusCount": 1,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 42,
+      "plannedSubmissionsCount": 0,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [],
+      "isFuture": false
+    },
+    {
+      "year": 2024,
+      "publishedCount": 1,
+      "articlesCount": 1,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 1,
+      "stage4PlusCount": 0,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 19,
+      "plannedSubmissionsCount": 0,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [],
+      "isFuture": false
+    },
+    {
+      "year": 2025,
+      "publishedCount": 1,
+      "articlesCount": 0,
+      "booksAndChaptersCount": 1,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 1,
+      "stage4PlusCount": 0,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 31,
+      "plannedSubmissionsCount": 0,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [],
+      "isFuture": false
+    },
+    {
+      "year": 2026,
+      "publishedCount": 0,
+      "articlesCount": 0,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 0,
+      "stage4PlusCount": 0,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 0,
+      "plannedSubmissionsCount": 1,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [
+        "demo-multimodal-equity"
+      ],
+      "isFuture": false
+    },
+    {
+      "year": 2027,
+      "publishedCount": 0,
+      "articlesCount": 0,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 0,
+      "stage4PlusCount": 0,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 0,
+      "plannedSubmissionsCount": 1,
+      "plannedPublicationsCount": 2,
+      "plannedPaperSlugs": [
+        "demo-multimodal-equity",
+        "demo-diamond-benchmark"
+      ],
+      "isFuture": true
+    },
+    {
+      "year": 2028,
+      "publishedCount": 0,
+      "articlesCount": 0,
+      "booksAndChaptersCount": 0,
+      "preprintsAndOtherCount": 0,
+      "oaCount": 0,
+      "stage4PlusCount": 0,
+      "citationsEarnedInYear": 0,
+      "citationsOfCohort": 0,
+      "plannedSubmissionsCount": 0,
+      "plannedPublicationsCount": 0,
+      "plannedPaperSlugs": [],
+      "isFuture": true
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+# Example planned-papers roadmap demonstrating public and private fields.
+plannedPapers:
+  - slug: spatial-pattern-benchmarks
+    title: Reproducible multi-scale benchmarks for categorical spatial pattern comparison
+    shortTitle: Spatial pattern benchmarks
+    category: conceptual-methodology
+    status: active-analysis
+    readinessPercent: 60
+    targetSubmissionQuarter: 2027-Q1
+    targetPublicationYear: 2027
+    targetOpenScienceStage: 5
+    currentOpenScienceStage: 3
+    summary: Introduces an open benchmark suite and interactive visual explorer comparing information-theoretic spatial signature metrics across heterogeneous land-cover rasters.
+    scientificGapFilled: Existing landscape metrics lack cross-scale calibration benchmarks linking information-theoretic divergence to practitioner interpretation.
+    methodologyHighlights:
+      - Co-occurrence matrix entropy and mutual information decomposition
+      - Reproducible R and Python benchmark suite with synthetic and ESA WorldCover tiles
+      - Interactive WebAssembly raster signature comparator
+    keyCitations:
+      - '@nowosad_motif_2021'
+    collaborators:
+      - Example Spatial Lab Team
+    repoUrls:
+      - label: Open benchmark code
+        url: https://github.com/Nowosad/motif
+        visibility: public
+      - label: Manuscript draft repository (private)
+        url: https://github.com/example-org/private-draft
+        visibility: private
+        redactUrlInPublic: true
+    interactiveToolUrl: null
+    nextMilestones:
+      - Complete sensitivity experiments across 50 m to 1 km resolutions
+      - Tag Zenodo benchmark archive prior to journal submission
+    targetJournals:
+      - journalId: international-journal-of-geographical-information-science
+        journalName: International Journal of Geographical Information Science
+        rank: 1
+        fitScore: 90
+        fitRationale: Core methodological venue for quantitative spatial pattern metrics.
+        pros:
+          - Strong methodological readership
+          - SJR Q1
+        cons:
+          - Detailed mathematical appendix expected
+      - journalId: journal-of-open-source-software
+        journalName: Journal of Open Source Software
+        rank: 2
+        fitScore: 84
+        fitRationale: Ideal Diamond OA venue for the companion software package.
+        pros:
+          - Diamond OA (zero APC)
+          - Open code peer review
+        cons:
+          - Companion methods theory requires separate paper
+    privateNotes: Keep internal referee strategy notes here; sanitizePortfolioForPublic() strips privateNotes automatically.
